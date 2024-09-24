@@ -45,6 +45,8 @@ function App() {
   });
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
+   
+   
     console.log("aqui vai ser o post", data);
   }
 
