@@ -20,6 +20,10 @@ import { Input } from "./components/ui/input";
 import { Button } from "./components/ui/button";
 import { dados } from "./../config";
 
+import { useAuth } from "./hooks/auth/useAuth";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+
 const FormSchema = z.object({
   dimensao: z.string().nonempty({ message: "Selecione uma dimensão." }),
   origem: z.string().nonempty({ message: "Selecione uma origem." }),
@@ -31,6 +35,22 @@ const FormSchema = z.object({
 });
 
 function App() {
+  const navigate = useNavigate();
+
+  const { signIn } = useAuth();
+  const [nome, setNome] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await signIn(nome, password);
+      navigate("/");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -44,20 +64,25 @@ function App() {
     },
   });
 
+  const Auth = false; // Defina a condição de autenticação aqui
+
   function onSubmit(data: z.infer<typeof FormSchema>) {
-   
-   
     console.log("aqui vai ser o post", data);
   }
 
   return (
-    <div className="container relative pb-10">
-      <div className="mx-auto flex max-w-[980px] flex-col items-center gap-2 py-8 md:py-12 md:pb-8 lg:py-24 lg:pb-6">
-        <div className="flex w-full items-start justify-center py-4 md:pb-6 rounded border flex-col p-10">
-          <Form {...form} onSubmit={form.handleSubmit(onSubmit)}>
-            <div className="flex flex-wrap gap-5 w-full">
-              {/* Grupo 1: Dimensão e Origem */}
-              <div className="flex flex-col flex-1">
+    <div
+      className="container relative pb-10 flex justify-center items-center bg-blue-400"
+      style={{ height: "100vh" }} // Use 'height' ao invés de 'blockSize'
+    >
+      {Auth ? (
+        <div className="p-14 border rounded-lg w-4/6 bg-white shadow-lg shadow-blue-700">
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="grid grid-rows-4 w-full"
+            >
+              <div className="grid grid-cols-2 gap-5">
                 <FormField
                   control={form.control}
                   name="dimensao"
@@ -65,7 +90,10 @@ function App() {
                     <FormItem>
                       <FormLabel>Dimensão</FormLabel>
                       <FormControl>
-                        <Select onValueChange={field.onChange} value={field.value}>
+                        <Select
+                          onValueChange={field.onChange}
+                          value={field.value}
+                        >
                           <SelectTrigger className="w-full">
                             <SelectValue placeholder="Selecione uma dimensão" />
                           </SelectTrigger>
@@ -82,9 +110,7 @@ function App() {
                     </FormItem>
                   )}
                 />
-              </div>
 
-              <div className="flex flex-col flex-1">
                 <FormField
                   control={form.control}
                   name="origem"
@@ -92,7 +118,10 @@ function App() {
                     <FormItem>
                       <FormLabel>Origem</FormLabel>
                       <FormControl>
-                        <Select onValueChange={field.onChange} value={field.value}>
+                        <Select
+                          onValueChange={field.onChange}
+                          value={field.value}
+                        >
                           <SelectTrigger className="w-full">
                             <SelectValue placeholder="Selecione uma origem" />
                           </SelectTrigger>
@@ -110,11 +139,8 @@ function App() {
                   )}
                 />
               </div>
-            </div>
 
-            <div className="flex flex-wrap gap-5 w-full mt-4">
-              {/* Grupo 2: Tema e Indicador */}
-              <div className="flex flex-col flex-1">
+              <div className="grid grid-cols-2 gap-5">
                 <FormField
                   control={form.control}
                   name="tema"
@@ -122,7 +148,10 @@ function App() {
                     <FormItem>
                       <FormLabel>Tema</FormLabel>
                       <FormControl>
-                        <Select onValueChange={field.onChange} value={field.value}>
+                        <Select
+                          onValueChange={field.onChange}
+                          value={field.value}
+                        >
                           <SelectTrigger className="w-full">
                             <SelectValue placeholder="Selecione um tema" />
                           </SelectTrigger>
@@ -139,9 +168,7 @@ function App() {
                     </FormItem>
                   )}
                 />
-              </div>
 
-              <div className="flex flex-col flex-1">
                 <FormField
                   control={form.control}
                   name="indicador"
@@ -149,7 +176,10 @@ function App() {
                     <FormItem>
                       <FormLabel>Indicador</FormLabel>
                       <FormControl>
-                        <Select onValueChange={field.onChange} value={field.value}>
+                        <Select
+                          onValueChange={field.onChange}
+                          value={field.value}
+                        >
                           <SelectTrigger className="w-full">
                             <SelectValue placeholder="Selecione um indicador" />
                           </SelectTrigger>
@@ -167,11 +197,8 @@ function App() {
                   )}
                 />
               </div>
-            </div>
 
-            <div className="flex flex-wrap gap-5 w-full mt-4">
-              {/* Grupo 3: Valor e Data */}
-              <div className="flex flex-col flex-1">
+              <div className="grid grid-cols-2 gap-5">
                 <FormField
                   control={form.control}
                   name="valor"
@@ -179,15 +206,17 @@ function App() {
                     <FormItem>
                       <FormLabel>Valor</FormLabel>
                       <FormControl>
-                        <Input placeholder="Valor" {...field} />
+                        <Input
+                          className="w-full"
+                          placeholder="Valor"
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-              </div>
 
-              <div className="flex flex-col flex-1">
                 <FormField
                   control={form.control}
                   name="data"
@@ -195,18 +224,20 @@ function App() {
                     <FormItem>
                       <FormLabel>Data</FormLabel>
                       <FormControl>
-                        <Input type="date" placeholder="Data" {...field} />
+                        <Input
+                          className="w-full"
+                          type="date"
+                          placeholder="Data"
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
               </div>
-            </div>
 
-            <div className="flex flex-wrap gap-5 w-full mt-4">
-              {/* Grupo 4: Geres */}
-              <div className="flex flex-col flex-1">
+              <div className="grid grid-cols-2 gap-5">
                 <FormField
                   control={form.control}
                   name="geres"
@@ -214,19 +245,71 @@ function App() {
                     <FormItem>
                       <FormLabel>Geres</FormLabel>
                       <FormControl>
-                        <Input placeholder="Geres" {...field} />
+                        <Input
+                          className="w-full"
+                          placeholder="Geres"
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
               </div>
-            </div>
-
-            <Button type="submit" className="mt-4">Enviar</Button>
+              <div className="flex w-full gap-3">
+                <Button type="submit" className="mt-4 w-1/6 bg-blue-500">
+                  Enviar
+                </Button>
+                <Button type="button" className="mt-4 w-1/6 bg-green-700">
+                  Salvar
+                </Button>
+              </div>
+            </form>
           </Form>
         </div>
-      </div>
+      ) : (
+        <div className="container h-full w-ful">
+          <div className="p-5 shadow-2xl bg-white w-full text-center">
+            <h1 className="text-5xl text-blue-400 font-bold ">
+              Monitoramento - Geres
+            </h1>
+          </div>
+          <div className="w-full h-full grid grid-cols-1 md:grid-cols-2 gap-6 bg-blue-400">
+            {/* Coluna da esquerda */}
+            <div className="flex justify-center items-center p-8">
+              <div className="flex flex-col gap-4 bg-white shadow-lg rounded-lg p-6 w-full max-w-md">
+                <Input
+                  className="border border-gray-300 rounded-md p-2"
+                  placeholder="Nome"
+                  onChange={(e) => setNome(e.target.value)}
+                />
+                <Input
+                  className="border border-gray-300 rounded-md p-2"
+                  placeholder="Senha"
+                  type="password"
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                <Button
+                  onClick={handleLogin}
+                  className="mt-4 bg-green-700 text-white hover:bg-green-600 transition-colors"
+                >
+                  Entrar
+                </Button>
+              </div>
+            </div>
+
+            <div className="flex flex-col justify-center items-center p-8 ">
+              <h2 className="text-xl font-semibold text-white">Instruções</h2>
+              <p className="mt-2 text-white">
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Nisi
+                eos molestias, sint perferendis inventore, perspiciatis iure
+                itaque odio dolore consequuntur ipsum! Quaerat recusandae
+                exercitationem itaque ex expedita enim fugiat repellendus?
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
