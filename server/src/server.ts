@@ -1,12 +1,17 @@
 // src/server.ts
 import fastify from "fastify";
 import fastifyJWT from "@fastify/jwt";
+import cors from "@fastify/cors";
 import authRoutes from "./routes/auth";
 
 const app = fastify({ logger: true });
 
 app.register(fastifyJWT, {
   secret: process.env.JWT_SECRET || "supersecret",
+});
+
+app.register(cors, {
+  origin: "*",
 });
 
 app.register(authRoutes);

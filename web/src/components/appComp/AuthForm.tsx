@@ -5,14 +5,15 @@ import { useAuth } from "@/hooks/auth/useAuth";
 
 const AuthForm = () => {
   const { signIn } = useAuth();
-  const [nome, setNome] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await signIn(nome, password);
-      // Navegação pode ser feita aqui
+      await signIn(email, password);
+      console.log(email, password);
+      
     } catch (error) {
       console.log(error);
     }
@@ -23,7 +24,7 @@ const AuthForm = () => {
       <Input
         className="border border-gray-300 rounded-md p-2"
         placeholder="Nome"
-        onChange={(e) => setNome(e.target.value)}
+        onChange={(e) => setEmail(e.target.value)}
       />
       <Input
         className="border border-gray-300 rounded-md p-2"
