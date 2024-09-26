@@ -112,7 +112,7 @@ const DataForm = () => {
 
   return (
     <div className="p-8 border rounded-lg shadow-lg w-3/6">
-      <h2 className="text-2xl font-semibold text-center mb-6">
+      <h2 className="text-3xl font-bold text-blue-500 text-center mb-6 ">
         Cadastro de Dados
       </h2>
       <Form {...form}>
@@ -187,7 +187,7 @@ const DataForm = () => {
             <DialogTrigger asChild>
               <Button
                 type="button"
-                className="w-full"
+                className="w-full bg-blue-500"
                 onClick={handleModalOpen}
               >
                 Enviar
