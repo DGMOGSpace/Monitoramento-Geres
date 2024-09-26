@@ -1,11 +1,13 @@
 // src/components/appComp/Header.jsx
-import React from 'react';
-import { useAuth } from '../../hooks/auth/useAuth';
-import { Button } from '../ui/button'; // Certifique-se de ter um componente Button
+import { useAuth } from "../../hooks/auth/useAuth";
+import { Button } from "../ui/button";
 
-const Header = ({ name }) => {
-  const { signOut } = useAuth(); // Supondo que useAuth tenha um método signOut
+interface HeaderProps {
+  name: string;
+}
 
+const Header = ({ name }: HeaderProps) => {
+  const { signOut } = useAuth();
   return (
     <div className="flex justify-between items-center p-4 bg-blue-500 text-white">
       <h1 className="text-xl">Olá, {name}</h1>

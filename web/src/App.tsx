@@ -4,21 +4,22 @@ import AuthForm from "./components/appComp/AuthForm";
 import DataForm from "./components/appComp/DataForm";
 import Instructions from "./components/appComp/Instructions";
 import Container from "./components/appComp/Container";
-import Header from "./components/appComp/Header"; // Importando o Header
+import Header from "./components/appComp/Header";
 
 const App = () => {
-  const { signed } = useAuth(); // Obtenha o estado de autenticação
-  const userName = "João"; // Nome fictício, pode ser dinâmico no futuro
+  const { signed } = useAuth();
+  const userName = "João";
+  console.log(signed)
 
   return (
     <Container>
-      <Header name={userName} /> {/* Adicionando o Header */}
       {signed ? (
-        <DataForm />
+        <div>
+          <Header name={userName} />
+          <DataForm />
+        </div>
       ) : (
-        <div className="container h-full w-full">
-          {" "}
-          {/* Corrigido w-ful para w-full */}
+        <div className=" h-full w-full">
           <div className="p-5 shadow-2xl bg-white w-full text-center">
             <h1 className="text-5xl text-blue-400 font-bold ">
               Monitoramento - Geres

@@ -6,15 +6,12 @@ const prisma = new PrismaClient();
 
 export default async function authRoutes(
   fastify: FastifyInstance,
-  options: FastifyPluginOptions
 ) {
   fastify.post("/login", async (request, reply) => {
     const { email, password } = request.body as {
       email: string;
       password: string;
     };
-
-    console.log(email, password);
 
     const user = await prisma.user.findUnique({
       where: { email, password },
@@ -31,6 +28,6 @@ export default async function authRoutes(
       }
     );
 
-    return { token };
+    return { user: user.fullName, token };
   });
 }
