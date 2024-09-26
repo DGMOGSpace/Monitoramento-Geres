@@ -1,6 +1,6 @@
 export const dados = {
   dimensao: ["EXECUTIVA", "GERES", "MUNICÍPIOS"],
-  origem: ["OFICINA GpR", "RENAN", "GABINETE DGPP"],
+  origem: ["OFICINA GpR", "GABINETE DGPP"],
   tema: [
     "FINANCEIRO / ORÇAMENTO",
     "GERES PErcorre",
@@ -31,5 +31,36 @@ export const dados = {
     "% DE INTEGRAÇÃO ENTRE GRUPOS CONDUTORES DE REDE E O PRI",
     "% PARTICIPAÇÃO DOS GESTORES NAS REUNIÕES DE CÂMARA TÉCNICA/CT CIR",
     "% PARTICIPAÇÃO DOS GESTORES NAS REUNIÕES DE CIR",
+  ],
+  macros: [
+    {
+      macro: "I MACRO",
+      geres: [
+        "I GERES: Recife",
+        "II GERES: Limoeiro",
+        "III GERES: Palmares",
+        "XII GERES: Goiana",
+      ],
+    },
+    {
+      macro: "II MACRO",
+      geres: ["IV GERES: Caruaru", "V GERES: Garanhuns"],
+    },
+    {
+      macro: "III MACRO",
+      geres: [
+        "VI GERES: Arcoverde",
+        "X GERES: Afogados da Ingazeira",
+        "XI GERES: Serra Talhada",
+      ],
+    },
+    {
+      macro: "IV MACRO",
+      geres: [
+        "VII GERES: Salgueiro",
+        "VIII GERES: Petrolina",
+        "IX GERES: Ouricuri",
+      ],
+    },
   ],
 };

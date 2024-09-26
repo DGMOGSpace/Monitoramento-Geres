@@ -14,7 +14,7 @@ const App = () => {
   return (
     <Container>
       {signed ? (
-        <div>
+        <div className="flex flex-col justify-center w-full items-center">
           <Header name={userName} />
           <DataForm />
         </div>
