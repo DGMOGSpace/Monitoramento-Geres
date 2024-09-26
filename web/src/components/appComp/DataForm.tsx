@@ -2,7 +2,6 @@ import { useForm } from "react-hook-form";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -21,261 +20,221 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { dados } from "../../../config";
 import { api } from "@/api/api";
-
 import { useAuth } from "@/hooks/auth/useAuth";
 import { useState } from "react";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 
 const FormSchema = z.object({
-  dimensao: z.string().nonempty({ message: "Selecione uma dimensão." }),
-  origem: z.string().nonempty({ message: "Selecione uma origem." }),
-  tema: z.string().nonempty({ message: "Selecione um tema." }),
-  indicador: z.string().nonempty({ message: "Selecione um indicador." }),
-  valor: z.number().min(1, { message: "Valor é obrigatório." }),
-  data: z.string().min(1, { message: "Data é obrigatória." }),
-  geres: z.string().min(1, { message: "Geres é obrigatória." }),
-  macro: z.string().min(1, { message: "Geres é obrigatória." }),
+  dimensao: z.string().nonempty("Selecione uma dimensão."),
+  macro: z.string().nonempty("Selecione uma macro."),
+  geres: z.string().nonempty("Selecione uma Geres."),
+  tema: z.string().nonempty("Selecione um tema."),
+  indicador: z.string().nonempty("Selecione um indicador."),
+  valor: z.number().min(1, "Valor é obrigatório."),
+  data: z.string().nonempty("Data é obrigatória."),
 });
 
 const DataForm = () => {
   const { user } = useAuth();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [formData, setFormData] = useState({});
   const [selectedMacro, setSelectedMacro] = useState("");
 
   const form = useForm({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       dimensao: "",
-      origem: "",
+      macro: "",
+      geres: "",
       tema: "",
       indicador: "",
       valor: 0,
       data: "",
-      geres: "",
-      macro: "",
     },
   });
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
-    try {
-      const response = await api.post("/addData", { ...data, user });
-      console.log("Dados do formulário:", response.data);
-    } catch (error) {
-      console.error("Erro ao enviar dados:", error);
-    }
+    await api.post("/addData", { ...data, user });
+    setIsModalOpen(false);
+  };
+
+  const renderSelectField = (
+    name,
+    label,
+    options,
+    placeholder,
+    onChange = null
+  ) => (
+    <FormField
+      control={form.control}
+      name={name}
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel>{label}</FormLabel>
+          <FormControl>
+            <Select
+              value={field.value}
+              onValueChange={(value) => {
+                field.onChange(value);
+                onChange && onChange(value);
+              }}
+            >
+              <SelectTrigger className="w-full border border-gray-300 rounded-md">
+                <SelectValue placeholder={placeholder} />
+              </SelectTrigger>
+              <SelectContent>
+                {options.map((item) => (
+                  <SelectItem key={item} value={item}>
+                    {item}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  );
+
+  const handleModalOpen = () => {
+    setFormData(form.getValues());
+    setIsModalOpen(true);
   };
 
   return (
-    <div
-      className="container relative pb-10 flex justify-center items-center bg-blue-400"
-      style={{ inlineSize: "100vw" }}
-    >
-      <div className="p-14 border rounded-lg bg-white shadow-lg shadow-blue-700 w-full">
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="grid grid-rows-4 w-full"
-          >
-            <div className="grid grid-cols-3 gap-5">
-              <FormField
-                control={form.control}
-                name="dimensao"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Dimensão</FormLabel>
-                    <FormControl>
-                      <Select
-                        onValueChange={field.onChange}
-                        value={field.value}
-                      >
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Selecione uma dimensão" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {dados.dimensao.map((item) => (
-                            <SelectItem key={item} value={item}>
-                              {item}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="macro"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Macro</FormLabel>
-                    <FormControl>
-                      <Select
-                        onValueChange={(value) => {
-                          field.onChange(value);
-                          setSelectedMacro(value);
-                        }}
-                        value={field.value}
-                      >
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Selecione uma macro" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {dados.macros.map((item) => (
-                            <SelectItem key={item.macro} value={item.macro}>
-                              {item.macro}{" "}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+    <div className="p-8 border rounded-lg shadow-lg w-3/6">
+      <h2 className="text-2xl font-semibold text-center mb-6">
+        Cadastro de Dados
+      </h2>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <div className="grid grid-cols-3 gap-6">
+            {renderSelectField(
+              "dimensao",
+              "Dimensão",
+              dados.dimensao,
+              "Selecione uma dimensão"
+            )}
+            {renderSelectField(
+              "macro",
+              "Macro",
+              dados.macros.map((m) => m.macro),
+              "Selecione uma macro",
+              setSelectedMacro
+            )}
+            {renderSelectField(
+              "geres",
+              "Geres",
+              selectedMacro
+                ? dados.macros.find((m) => m.macro === selectedMacro)?.geres
+                : [],
+              "Selecione uma Geres"
+            )}
+          </div>
+          <div className="grid grid-cols-2 gap-6">
+            {renderSelectField("tema", "Tema", dados.tema, "Selecione um tema")}
+            {renderSelectField(
+              "indicador",
+              "Indicador",
+              dados.indicador,
+              "Selecione um indicador"
+            )}
+          </div>
+          <div className="grid grid-cols-2 gap-6">
+            <FormField
+              control={form.control}
+              name="valor"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Valor</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      type="number"
+                      min={0}
+                      placeholder="Valor"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="data"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Data</FormLabel>
+                  <FormControl>
+                    <Input {...field} type="date" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
 
-              <FormField
-                control={form.control}
-                name="geres"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Selecione a Geres:</FormLabel>
-                    <FormControl>
-                      <Select
-                        onValueChange={field.onChange}
-                        value={field.value}
-                      >
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Selecione uma macro" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {selectedMacro &&
-                            dados.macros
-                              .find((item) => item.macro === selectedMacro)
-                              ?.geres.map((geres) => (
-                                <SelectItem key={geres} value={geres}>
-                                  {geres}
-                                </SelectItem>
-                              ))}
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-5">
-              <FormField
-                control={form.control}
-                name="tema"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Tema</FormLabel>
-                    <FormControl>
-                      <Select
-                        onValueChange={field.onChange}
-                        value={field.value}
-                      >
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Selecione um tema" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {dados.tema.map((item) => (
-                            <SelectItem key={item} value={item}>
-                              {item}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="indicador"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Indicador</FormLabel>
-                    <FormControl>
-                      <Select
-                        onValueChange={field.onChange}
-                        value={field.value}
-                      >
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Selecione um indicador" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {dados.indicador.map((item) => (
-                            <SelectItem key={item} value={item}>
-                              {item}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-5">
-              <FormField
-                control={form.control}
-                name="valor"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Valor</FormLabel>
-                    <FormDescription>
-                      Insira os resultados (Numéricos)
-                    </FormDescription>
-
-                    <FormControl>
-                      <Input
-                        className="w-full"
-                        placeholder="Resultado do valor (Numérico)"
-                        type="number"
-                        min={0}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="data"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Data De Referência da Informação</FormLabel>
-                    <FormControl>
-                      <Input className="w-full" type="date" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-5"></div>
-
-            <div className="flex w-full gap-3">
-              <Button type="submit" className="mt-4 w-1/6 bg-blue-500">
+          <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+            <DialogTrigger asChild>
+              <Button
+                type="button"
+                className="w-full"
+                onClick={handleModalOpen}
+              >
                 Enviar
               </Button>
-              <Button type="button" className="mt-4 w-1/6 bg-green-700">
-                Salvar
-              </Button>
-            </div>
-          </form>
-        </Form>
-      </div>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Confirmar Envio</DialogTitle>
+                <DialogDescription>
+                  Confira os dados preenchidos abaixo antes de confirmar:
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4">
+                <p>
+                  <strong>Dimensão:</strong> {formData.dimensao}
+                </p>
+                <p>
+                  <strong>Macro:</strong> {formData.macro}
+                </p>
+                <p>
+                  <strong>Geres:</strong> {formData.geres}
+                </p>
+                <p>
+                  <strong>Tema:</strong> {formData.tema}
+                </p>
+                <p>
+                  <strong>Indicador:</strong> {formData.indicador}
+                </p>
+                <p>
+                  <strong>Valor:</strong> {formData.valor}
+                </p>
+                <p>
+                  <strong>Data:</strong> {formData.data}
+                </p>
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setIsModalOpen(false)}>
+                  Cancelar
+                </Button>
+                <Button onClick={form.handleSubmit(onSubmit)}>
+                  Confirmar Envio
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </form>
+      </Form>
     </div>
   );
 };

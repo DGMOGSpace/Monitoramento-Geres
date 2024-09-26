@@ -9,7 +9,6 @@ import Header from "./components/appComp/Header";
 const App = () => {
   const { signed } = useAuth();
   const userName = "João";
-  console.log(signed)
 
   return (
     <Container>
@@ -19,14 +18,14 @@ const App = () => {
           <DataForm />
         </div>
       ) : (
-        <div className=" h-full w-full">
-          <div className="p-5 shadow-2xl bg-white w-full text-center">
-            <h1 className="text-5xl text-blue-400 font-bold ">
-              Monitoramento - Geres
-            </h1>
+        <div className="h-full w-full">
+          <div className="bg-slate-50 p-5 flex gap-5 w-full text-center">
+            <img className="w-40 ms-24" src="gpr_logo.png" alt="" />
+            <img className="w-40" src="gpr_logo.png" alt="" />
+            <img className="w-40" src="gpr_logo.png" alt="" />
           </div>
-          <div className="w-full h-full grid grid-cols-1 md:grid-cols-2 gap-6 bg-blue-400">
-            <div className="flex justify-center items-center p-8">
+          <div className="w-full h-full grid md:grid-cols-2 gap-6 bg-blue-400">
+            <div className="flex justify-center items-center ">
               <AuthForm />
             </div>
             <Instructions />

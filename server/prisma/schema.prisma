@@ -13,15 +13,14 @@ model User {
   password  String
   geres     Int
   email     String     @unique
-  cpf       String     @unique
   createdAt DateTime   @default(now())
-  logs      Log[] // Relacionamento 1:N com Log
-  dataForms DataForm[] // Relacionamento 1:N com DataForm
+  logs      Log[] 
+  dataForms DataForm[]
 }
 
 model Log {
   id     Int      @id @default(autoincrement())
-  idUser Int // Chave estrangeira para User
+  idUser Int 
   idForm Int
   user   User     @relation(fields: [idUser], references: [id])
   form   DataForm @relation(fields: [idForm], references: [id])
