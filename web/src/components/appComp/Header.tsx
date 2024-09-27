@@ -3,18 +3,26 @@ import { useAuth } from "../../hooks/auth/useAuth";
 import { Button } from "../ui/button";
 
 interface HeaderProps {
-  name: string;
+  name?: string;
 }
 
 const Header = ({ name }: HeaderProps) => {
   const { signOut } = useAuth();
+
   return (
-    <div className="flex w-full justify-between items-center p-4 bg-blue-500 text-white mb-10">
-      <h1 className="text-xl">Olá, {name}</h1>
-      <Button onClick={signOut} className="bg-red-500 hover:bg-red-600 ">
-        Sair
+    <header className="flex justify-between w-full items-center p-8 bg-white text-blue-400 shadow-lg mb-10 rounded-b-lg">
+      <div className="flex items-center space-x-3">
+        <h1 className="text-2xl font-semibold tracking-wide">
+          Olá, <span className="font-bold">{name}</span>
+        </h1>
+      </div>
+      <Button
+        onClick={signOut}
+        className="flex items-center space-x-2 bg-red-600 hover:bg-red-700 transition duration-200 ease-in-out rounded-lg shadow-md p-2"
+      >
+        <span>Sair</span>
       </Button>
-    </div>
+    </header>
   );
 };
 

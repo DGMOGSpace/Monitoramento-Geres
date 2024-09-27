@@ -17,9 +17,6 @@ export default async function formRoutes(fastify: FastifyInstance) {
         dataref: string;
       };
 
-      prisma.
-
-
     return reply.status(201).send({ message: "Form Enviado" });
   });
 }

@@ -6,10 +6,12 @@ import DataForm from "./components/appComp/DataForm";
 import Container from "./components/appComp/Container";
 import Header from "./components/appComp/Header";
 import LoadingScreen from "./components/appComp/LoadingScreen";
+import { Footer } from "./components/appComp/Footer";
 
 const App = () => {
-  const { signed } = useAuth();
-  const userName = "João";
+  const { signed, user } = useAuth();
+  console.log(user, signed)
+  
   const [loading, setLoading] = useState(false);
 
   return (
@@ -17,8 +19,11 @@ const App = () => {
       {loading ? (
         <LoadingScreen />
       ) : signed ? (
-        <div className="flex flex-col items-center justify-center w-full">
-          <Header name={userName} />
+        <div
+          className="flex flex-col items-center justify-center  w-full"
+          style={{ backgroundImage: "url('bg_blue_home.png')" }}
+        >
+          <Header name={user?.fullName} />
           <DataForm />
         </div>
       ) : (
@@ -26,10 +31,8 @@ const App = () => {
           className="h-full w-full flex flex-col bg-blue-400 bg-cover bg-center"
           style={{ backgroundImage: "url('bg_blue_home.png')" }}
         >
-          
-
-          <div className="grid md:grid-cols-2 gap-6 flex-grow bg-gradient-to-r from-white">
-          <div className="flex justify-center items-center">
+          <div className="grid md:grid-cols-2 gap-6 flex-grow bg-gradient-to-r from-white h-screen">
+            <div className="flex justify-center items-center">
               <img
                 className="md:block w-96"
                 src="gpr_logo.png"
@@ -39,21 +42,9 @@ const App = () => {
             <div className="flex justify-center items-center">
               <AuthForm setLoading={setLoading} />
             </div>
-            
           </div>
 
-          <footer className="flex justify-center items-center gap-5 bg-slate-50 p-4">
-            <img
-              className="w-28"
-              src="logo_dgmog.png"
-              alt="Logo da DGMOG"
-            />
-            <img
-              className="w-28"
-              src="logo_gov.png"
-              alt="Logo do Governo"
-            />
-          </footer>
+          <Footer />
         </div>
       )}
     </Container>
