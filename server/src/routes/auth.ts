@@ -28,6 +28,6 @@ export default async function authRoutes(
       }
     );
 
-    return { user: user.fullName, token };
+    return { user, token };
   });
 }
