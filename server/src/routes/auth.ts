@@ -1,4 +1,3 @@
-// src/routes/auth.ts
 import { FastifyInstance, FastifyPluginOptions } from "fastify";
 import { PrismaClient } from "@prisma/client";
 

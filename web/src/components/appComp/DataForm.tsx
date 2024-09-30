@@ -116,7 +116,7 @@ const DataForm = () => {
                    <Input
                      type="number"
                      placeholder="Valor"
-                     className="border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-300 focus:outline-none w-full" // Mudança para w-full
+                     className="border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-300 focus:outline-none w-full"
                      onChange={(e) => {
                        const index = valuesList.findIndex((item) => item.indicador === indicador);
                        if (index >= 0) {

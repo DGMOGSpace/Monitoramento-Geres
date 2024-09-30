@@ -10,7 +10,7 @@ const AuthForm = ({ setLoading }: { setLoading: (loading: boolean) => void }) =>
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true); // Inicia o loading
+    setLoading(true); 
     try {
       await signIn(email, password);
       console.log(email, password);
@@ -18,7 +18,7 @@ const AuthForm = ({ setLoading }: { setLoading: (loading: boolean) => void }) =>
       console.log(error);
     } finally {
       setTimeout(() => {
-        setLoading(false); // Finaliza o loading
+        setLoading(false); 
       }, 1000);
     }
   };
