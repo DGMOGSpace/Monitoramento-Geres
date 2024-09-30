@@ -6,10 +6,7 @@ interface ContainerProps {
 
 const Container: React.FC<ContainerProps> = ({ children }) => {
   return (
-    <div
-      className="container relative pb-10 flex justify-center items-center bg-blue-400"
-      style={{ blockSize: "100vh" }}
-    >
+    <div className="w-full h-full bg-white ">
       {children}
     </div>
   );

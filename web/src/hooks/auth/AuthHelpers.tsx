@@ -13,6 +13,7 @@ export const clearAuthData = () => {
 export const getAuthData = () => {
   const user = localStorage.getItem("@Auth:user");
   const token = localStorage.getItem("@Auth:token");
+  console.log(user, token)
   return {
     user: user ? JSON.parse(user) : (null as UserInterface | null),
     token,

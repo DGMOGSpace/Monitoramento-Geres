@@ -1,4 +1,3 @@
-// AuthContext.tsx
 import { createContext, useState, ReactNode, useEffect } from "react";
 import { api } from "@/api/api";
 import { saveAuthData, clearAuthData, getAuthData } from "./AuthHelpers";

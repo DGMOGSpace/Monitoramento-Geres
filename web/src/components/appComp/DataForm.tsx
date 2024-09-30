@@ -7,240 +7,234 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { dados } from "../../../config";
+import { api } from "@/api/api";
+import { useAuth } from "@/hooks/auth/useAuth";
+import { useState } from "react";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from "@/components/ui/accordion";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const FormSchema = z.object({
-  dimensao: z.string().nonempty({ message: "Selecione uma dimensão." }),
-  origem: z.string().nonempty({ message: "Selecione uma origem." }),
-  tema: z.string().nonempty({ message: "Selecione um tema." }),
-  indicador: z.string().nonempty({ message: "Selecione um indicador." }),
-  valor: z.string().min(1, { message: "Valor é obrigatório." }),
-  data: z.string().min(1, { message: "Data é obrigatória." }),
-  geres: z.string().min(1, { message: "Geres é obrigatória." }),
+  data: z.string().nonempty("Data é obrigatória."),
 });
 
+interface IndicatorValue {
+  indicador: string;
+  valor: string;
+}
+
 const DataForm = () => {
+  const { user } = useAuth();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [valuesList, setValuesList] = useState<IndicatorValue[]>([]);
+
   const form = useForm({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      dimensao: "",
-      origem: "",
-      tema: "",
-      indicador: "",
-      valor: "",
       data: "",
-      geres: "",
     },
   });
 
-  const onSubmit = (data: z.infer<typeof FormSchema>) => {
-    console.log("Dados do formulário:", data);
-    // Aqui você pode fazer um POST para enviar os dados ao backend
+  const handleValueChange = (
+    index: number,
+    field: keyof IndicatorValue,
+    value: string
+  ) => {
+    const newValuesList = [...valuesList];
+    newValuesList[index][field] = value;
+    setValuesList(newValuesList);
   };
 
+  const onSubmit = async (data: z.infer<typeof FormSchema>) => {
+    const payload = {
+      ...data,
+      userId: user?.id,
+      values: valuesList,
+    };
+
+    await api.post("/addData", payload);
+    console.log(payload)
+    setIsModalOpen(false);
+  };
+
+  const allFieldsFilled =
+    form.getValues().data && valuesList.every((val) => val.valor);
+
   return (
-    <div
-      className="container relative pb-10 flex justify-center items-center bg-blue-400"
-      style={{ blockSize: "100vh" }}
-    >
-      <div className="p-14 border rounded-lg w-4/6 bg-white shadow-lg shadow-blue-700">
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="grid grid-rows-4 w-full"
-          >
-            <div className="grid grid-cols-2 gap-5">
-              <FormField
-                control={form.control}
-                name="dimensao"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Dimensão</FormLabel>
-                    <FormControl>
-                      <Select
-                        onValueChange={field.onChange}
-                        value={field.value}
+    <div className="p-8 rounded-lg shadow-md w-3/6 mx-auto my-10 bg-white">
+      <h2 className="text-3xl font-bold text-blue-600 text-center mb-6">
+        Cadastro de Dados
+      </h2>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <Accordion type="multiple">
+            {Object.entries(dados.temasIndicadores).map(
+              ([tema, indicadores]) => {
+                const isFilled = indicadores.every((indicador) => {
+                  const value = valuesList.find(
+                    (item) => item.indicador === indicador
+                  );
+                  return value && value.valor;
+                });
+
+                return (
+                  <AccordionItem key={tema} value={tema}>
+                    <AccordionTrigger
+                      className={`relative flex justify-between items-center p-4 rounded-lg transition-colors ${
+                        isFilled ? "bg-green-300" : "bg-white"
+                      } shadow hover:bg-green-100`}
+                    >
+                      <span className="text-lg font-semibold hover:underline text-gray-700">
+                        {tema}
+                      </span>
+                      <span
+                        className={`text-green-500 absolute right-10 transition-opacity duration-200 ${
+                          isFilled ? "opacity-100" : "opacity-0"
+                        }`}
+                        style={{ textDecoration: "none" }}
                       >
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Selecione uma dimensão" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {dados.dimensao.map((item) => (
-                            <SelectItem key={item} value={item}>
-                              {item}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                        ✓
+                      </span>
+                    </AccordionTrigger>
+                    <AccordionContent className="p-4">
+                      {indicadores.map((indicador) => (
+                        <div key={indicador} className="mb-4">
+                          <FormLabel className="text-gray-700 font-medium">
+                            {indicador}
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              type="number"
+                              min={0}
+                              placeholder="Valor"
+                              className="border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-300 focus:outline-none w-full"
+                              onChange={(e) => {
+                                const index = valuesList.findIndex(
+                                  (item) => item.indicador === indicador
+                                );
+                                if (index >= 0) {
+                                  handleValueChange(
+                                    index,
+                                    "valor",
+                                    e.target.value
+                                  );
+                                } else {
+                                  setValuesList([
+                                    ...valuesList,
+                                    { indicador, valor: e.target.value },
+                                  ]);
+                                }
+                              }}
+                            />
+                          </FormControl>
+                        </div>
+                      ))}
+                    </AccordionContent>
+                  </AccordionItem>
+                );
+              }
+            )}
+          </Accordion>
+          <FormField
+            control={form.control}
+            name="data"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-gray-700 font-medium">
+                  Data
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    type="date"
+                    min="2024-01-01"
+                    max="2024-12-31"
+                    className="border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-300 focus:outline-none"
+                  />
+                </FormControl>
+                <FormMessage className="text-red-500" />
+              </FormItem>
+            )}
+          />
 
-              <FormField
-                control={form.control}
-                name="origem"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Origem</FormLabel>
-                    <FormControl>
-                      <Select
-                        onValueChange={field.onChange}
-                        value={field.value}
-                      >
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Selecione uma origem" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {dados.origem.map((item) => (
-                            <SelectItem key={item} value={item}>
-                              {item}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-5">
-              <FormField
-                control={form.control}
-                name="tema"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Tema</FormLabel>
-                    <FormControl>
-                      <Select
-                        onValueChange={field.onChange}
-                        value={field.value}
-                      >
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Selecione um tema" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {dados.tema.map((item) => (
-                            <SelectItem key={item} value={item}>
-                              {item}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="indicador"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Indicador</FormLabel>
-                    <FormControl>
-                      <Select
-                        onValueChange={field.onChange}
-                        value={field.value}
-                      >
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Selecione um indicador" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {dados.indicador.map((item) => (
-                            <SelectItem key={item} value={item}>
-                              {item}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-5">
-              <FormField
-                control={form.control}
-                name="valor"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Valor</FormLabel>
-                    <FormControl>
-                      <Input
-                        className="w-full"
-                        placeholder="Valor"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="data"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Data</FormLabel>
-                    <FormControl>
-                      <Input className="w-full" type="date" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-5">
-              <FormField
-                control={form.control}
-                name="geres"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Geres</FormLabel>
-                    <FormControl>
-                      <Input
-                        className="w-full"
-                        placeholder="Geres"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <div className="flex w-full gap-3">
-              <Button type="submit" className="mt-4 w-1/6 bg-blue-500">
+          <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+            <DialogTrigger asChild>
+              <Button
+                type="button"
+                className={`w-full ${
+                  allFieldsFilled
+                    ? "bg-blue-500"
+                    : "bg-gray-300 cursor-not-allowed"
+                } text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300 rounded-md shadow-md`}
+                onClick={
+                  allFieldsFilled ? () => setIsModalOpen(true) : undefined
+                }
+                disabled={!allFieldsFilled}
+              >
                 Enviar
               </Button>
-              <Button type="button" className="mt-4 w-1/6 bg-green-700">
-                Salvar
-              </Button>
-            </div>
-          </form>
-        </Form>
-      </div>
+            </DialogTrigger>
+            <DialogContent className="min-w-max">
+              <DialogHeader>
+                <DialogTitle className="text-xl font-bold">
+                  Confirmar Envio
+                </DialogTitle>
+                <DialogDescription>
+                  Confira os dados preenchidos abaixo antes de confirmar:
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4">
+                <p>
+                  <strong>Data:</strong> {form.getValues().data}
+                </p>
+                <div>
+                  <strong>Valores:</strong>
+                  <ul className="list-disc pl-5">
+                    {valuesList.map((item, index) => (
+                      <li key={index} className="text-gray-800">
+                        <strong>{item.indicador}:</strong> {item.valor}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+              <DialogFooter>
+                <Button
+                  variant="outline"
+                  onClick={() => setIsModalOpen(false)}
+                  className="border-gray-300 text-gray-700 hover:bg-gray-100"
+                >
+                  Cancelar
+                </Button>
+                <Button
+                  type="submit"
+                  onClick={form.handleSubmit(onSubmit)}
+                  className="bg-blue-500 text-white hover:bg-blue-600"
+                >
+                  Confirmar Envio
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </form>
+      </Form>
     </div>
   );
 };

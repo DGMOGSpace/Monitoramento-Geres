@@ -13,6 +13,41 @@ model User {
   password  String
   geres     Int
   email     String   @unique
-  cpf       String   @unique
   createdAt DateTime @default(now())
+  logs      Log[] 
+  dataForms DataForm[]
+}
+
+model Log {
+  id     Int      @id @default(autoincrement())
+  idUser Int 
+  idForm Int
+  user   User     @relation(fields: [idUser], references: [id])
+  form   DataForm @relation(fields: [idForm], references: [id])
+}
+
+model DataForm {
+  id        Int      @id @default(autoincrement())
+  idUser    Int
+  user      User     @relation(fields: [idUser], references: [id])
+  execucao_do_orcamento_por_regional   Float? 
+  taxa_de_satisfacao_municipios_apoio_geres Float?
+  resolucao_acoes_competencias_geres    Float?
+  municipios_visitados                   Float?
+  aproveitamento_cotas_exame_imagem     Float?
+  taxa_perda_primaria_upae               Float?
+  taxa_absenteismo                       Float?
+  cumprimento_pes_quadrimestre           Float?
+  cumprimento_pes_exercicio              Float?
+  indice_qualificacao_acoes_vigilancia   Float?
+  aproveitamento_cotas_consultas_especializadas Float?
+  municipios_instrumentos_gestao_sus_atualizados Float?
+  implementacao_planejamento_estrategico Float?
+  engajamento_gestores_reunioes_grupos_condutores_macrorregionais Float? 
+  integracao_grupos_condutores_rede_pri  Float? 
+  participacao_gestores_reunioes_camara_tecnica_ct_cir Float? 
+  participacao_gestores_reunioes_cir     Float?
+  dataRef   String
+  createdAt DateTime @default(now())
+  logs      Log[]
 }
