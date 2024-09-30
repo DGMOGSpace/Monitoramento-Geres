@@ -76,3 +76,30 @@ html, body {
     @apply bg-background text-foreground;
   }
 }
+@layer base {
+  /* Adicione o estilo do scrollbar aqui */
+  /* Scrollbar Styles */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: white;
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgb(111, 111, 134);
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgb(98, 98, 131);
+  }
+  body {
+    scrollbar-width: thin; /* Define o scrollbar como fino */
+    scrollbar-color: rgb(99, 99, 114) white; /* Define a cor do polegar e da trilha */
+  }
+}
+

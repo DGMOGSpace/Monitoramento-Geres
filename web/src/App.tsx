@@ -1,4 +1,5 @@
-import { useState } from "react";
+// src/App.tsx
+import { useState, useEffect } from "react";
 import { useAuth } from "./hooks/auth/useAuth";
 import AuthForm from "./components/appComp/AuthForm";
 import DataForm from "./components/appComp/DataForm";
@@ -6,12 +7,16 @@ import Container from "./components/appComp/Container";
 import Header from "./components/appComp/Header";
 import LoadingScreen from "./components/appComp/LoadingScreen";
 import { Footer } from "./components/appComp/Footer";
+import PrivacyTermsModal from "./components/appComp/PrivacyTermsModal";
 
 const App = () => {
-  const { signed, user } = useAuth();
-  console.log(user, signed)
-  
+  const { signed } = useAuth();
   const [loading, setLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(!signed); // Modal aberto se não estiver logado
+
+  useEffect(() => {
+    setIsModalOpen(!signed); // Atualiza o estado do modal com base no login
+  }, [signed]);
 
   return (
     <Container>
@@ -19,10 +24,10 @@ const App = () => {
         <LoadingScreen />
       ) : signed ? (
         <div
-          className="flex flex-col items-center justify-center  w-full"
+          className="flex flex-col items-center justify-center w-full"
           style={{ backgroundImage: "url('bg_blue_home.png')" }}
         >
-          <Header name={user?.fullName} />
+          <Header />
           <DataForm />
         </div>
       ) : (
@@ -46,6 +51,10 @@ const App = () => {
           <Footer />
         </div>
       )}
+      <PrivacyTermsModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)} // Fecha o modal
+      />
     </Container>
   );
 };

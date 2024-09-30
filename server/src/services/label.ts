@@ -1,9 +1,3 @@
-import { FastifyInstance } from "fastify";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
-
-
 const indicatorsMap: { [key: string]: string } = {
   "% DE EXECUÇÃO DO ORÇAMENTO POR REGIONAL":
     "execucao_do_orcamento_por_regional",
@@ -36,44 +30,11 @@ const indicatorsMap: { [key: string]: string } = {
     "participacao_gestores_reunioes_cir",
 };
 
-// Função para converter nomes de indicadores usando o dicionário
 export function ConvertFormLabel(
   textToConvert: string,
   dict: { [key: string]: string }
 ): string {
-  return dict[textToConvert] || textToConvert; // Retorna o valor ou o texto original
+  return dict[textToConvert] || textToConvert;
 }
 
-export default async function formRoutes(fastify: FastifyInstance) {
-  fastify.post("/addData", async (request, reply) => {
-    const { data, userId, values } = request.body as {
-      data: string;
-      userId: number;
-      values: { indicador: string; valor: number }[];
-    };
 
-    console.log(data, userId, values);
-
-    if (!data || !userId || !Array.isArray(values)) {
-      return reply.status(400).send({ message: "Dados inválidos." });
-    }
-
-    for (const item of values) {
-      const { indicador, valor } = item;
-
-      const convertedIndicator = ConvertFormLabel(indicador, indicatorsMap);
-      console.log(convertedIndicator);
-
-      /* await prisma.indicador.create({
-        data: {
-          data,
-          userId,
-          indicador: convertedIndicator,
-          valor,
-        },
-      }); */
-    }
-
-    return reply.status(201).send({ message: "Dados enviados com sucesso." });
-  });
-}

@@ -70,10 +70,12 @@ const DataForm = () => {
     };
 
     await api.post("/addData", payload);
+    console.log(payload)
     setIsModalOpen(false);
   };
 
-  const allFieldsFilled = form.getValues().data && valuesList.every(val => val.valor);
+  const allFieldsFilled =
+    form.getValues().data && valuesList.every((val) => val.valor);
 
   return (
     <div className="p-8 rounded-lg shadow-md w-3/6 mx-auto my-10 bg-white">
@@ -82,12 +84,82 @@ const DataForm = () => {
       </h2>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <Accordion type="multiple">
+            {Object.entries(dados.temasIndicadores).map(
+              ([tema, indicadores]) => {
+                const isFilled = indicadores.every((indicador) => {
+                  const value = valuesList.find(
+                    (item) => item.indicador === indicador
+                  );
+                  return value && value.valor;
+                });
+
+                return (
+                  <AccordionItem key={tema} value={tema}>
+                    <AccordionTrigger
+                      className={`relative flex justify-between items-center p-4 rounded-lg transition-colors ${
+                        isFilled ? "bg-green-300" : "bg-white"
+                      } shadow hover:bg-green-100`}
+                    >
+                      <span className="text-lg font-semibold hover:underline text-gray-700">
+                        {tema}
+                      </span>
+                      <span
+                        className={`text-green-500 absolute right-10 transition-opacity duration-200 ${
+                          isFilled ? "opacity-100" : "opacity-0"
+                        }`}
+                        style={{ textDecoration: "none" }}
+                      >
+                        ✓
+                      </span>
+                    </AccordionTrigger>
+                    <AccordionContent className="p-4">
+                      {indicadores.map((indicador) => (
+                        <div key={indicador} className="mb-4">
+                          <FormLabel className="text-gray-700 font-medium">
+                            {indicador}
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              type="number"
+                              min={0}
+                              placeholder="Valor"
+                              className="border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-300 focus:outline-none w-full"
+                              onChange={(e) => {
+                                const index = valuesList.findIndex(
+                                  (item) => item.indicador === indicador
+                                );
+                                if (index >= 0) {
+                                  handleValueChange(
+                                    index,
+                                    "valor",
+                                    e.target.value
+                                  );
+                                } else {
+                                  setValuesList([
+                                    ...valuesList,
+                                    { indicador, valor: e.target.value },
+                                  ]);
+                                }
+                              }}
+                            />
+                          </FormControl>
+                        </div>
+                      ))}
+                    </AccordionContent>
+                  </AccordionItem>
+                );
+              }
+            )}
+          </Accordion>
           <FormField
             control={form.control}
             name="data"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-gray-700 font-medium">Data</FormLabel>
+                <FormLabel className="text-gray-700 font-medium">
+                  Data
+                </FormLabel>
                 <FormControl>
                   <Input
                     {...field}
@@ -102,45 +174,18 @@ const DataForm = () => {
             )}
           />
 
-          <Accordion type="multiple">
-            {Object.entries(dados.temasIndicadores).map(([tema, indicadores]) => (
-              <AccordionItem key={tema} value={tema}>
-                <AccordionTrigger className="text-lg font-semibold text-gray-700">
-                  {tema}
-                </AccordionTrigger>
-                <AccordionContent>
-                  {indicadores.map((indicador) => (
-                 <div key={indicador} className="mb-4">
-                 <FormLabel className="text-gray-700 font-medium">{indicador}</FormLabel>
-                 <FormControl>
-                   <Input
-                     type="number"
-                     placeholder="Valor"
-                     className="border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-300 focus:outline-none w-full"
-                     onChange={(e) => {
-                       const index = valuesList.findIndex((item) => item.indicador === indicador);
-                       if (index >= 0) {
-                         handleValueChange(index, "valor", e.target.value);
-                       } else {
-                         setValuesList([...valuesList, { indicador, valor: e.target.value }]);
-                       }
-                     }}
-                   />
-                 </FormControl>
-               </div>
-               
-                  ))}
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
-
           <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
             <DialogTrigger asChild>
               <Button
                 type="button"
-                className={`w-full ${allFieldsFilled ? "bg-blue-500" : "bg-gray-300 cursor-not-allowed"} text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300 rounded-md shadow-md`}
-                onClick={allFieldsFilled ? () => setIsModalOpen(true) : undefined}
+                className={`w-full ${
+                  allFieldsFilled
+                    ? "bg-blue-500"
+                    : "bg-gray-300 cursor-not-allowed"
+                } text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300 rounded-md shadow-md`}
+                onClick={
+                  allFieldsFilled ? () => setIsModalOpen(true) : undefined
+                }
                 disabled={!allFieldsFilled}
               >
                 Enviar
@@ -148,13 +193,17 @@ const DataForm = () => {
             </DialogTrigger>
             <DialogContent className="min-w-max">
               <DialogHeader>
-                <DialogTitle className="text-xl font-bold">Confirmar Envio</DialogTitle>
+                <DialogTitle className="text-xl font-bold">
+                  Confirmar Envio
+                </DialogTitle>
                 <DialogDescription>
                   Confira os dados preenchidos abaixo antes de confirmar:
                 </DialogDescription>
               </DialogHeader>
               <div className="space-y-4">
-                <p><strong>Data:</strong> {form.getValues().data}</p>
+                <p>
+                  <strong>Data:</strong> {form.getValues().data}
+                </p>
                 <div>
                   <strong>Valores:</strong>
                   <ul className="list-disc pl-5">

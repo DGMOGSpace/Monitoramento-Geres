@@ -39,13 +39,7 @@ export function Footer() {
           href="#"
           className="text-slate-500 hover:text-slate-700 transition-colors duration-200"
         >
-          Política de Privacidade
-        </a>
-        <a
-          href="#"
-          className="text-slate-500 hover:text-slate-700 transition-colors duration-200"
-        >
-          Termos de Uso
+          Política de Privacidade e Termos de Uso
         </a>
       </div>
     </footer>
