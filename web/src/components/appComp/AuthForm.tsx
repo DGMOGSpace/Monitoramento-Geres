@@ -3,14 +3,18 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/auth/useAuth";
 
-const AuthForm = ({ setLoading }: { setLoading: (loading: boolean) => void }) => {
+const AuthForm = ({
+  setLoading,
+}: {
+  setLoading: (loading: boolean) => void;
+}) => {
   const { signIn } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true); 
+    setLoading(true);
     try {
       await signIn(email, password);
       console.log(email, password);
@@ -18,7 +22,7 @@ const AuthForm = ({ setLoading }: { setLoading: (loading: boolean) => void }) =>
       console.log(error);
     } finally {
       setTimeout(() => {
-        setLoading(false); 
+        setLoading(false);
       }, 1000);
     }
   };

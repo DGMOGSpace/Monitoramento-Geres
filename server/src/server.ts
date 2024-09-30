@@ -4,6 +4,7 @@ import fastifyJWT from "@fastify/jwt";
 import cors from "@fastify/cors";
 import authRoutes from "./routes/auth";
 import formRoutes from "./routes/form";
+import adminRoutes from "./routes/admin";
 
 const app = fastify({ logger: true });
 
@@ -17,6 +18,7 @@ app.register(cors, {
 
 app.register(authRoutes);
 app.register(formRoutes);
+app.register(adminRoutes);
 
 const start = async () => {
   try {
