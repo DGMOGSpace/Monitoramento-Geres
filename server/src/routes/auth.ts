@@ -3,9 +3,7 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export default async function authRoutes(
-  fastify: FastifyInstance,
-) {
+export default async function authRoutes(fastify: FastifyInstance) {
   fastify.post("/login", async (request, reply) => {
     const { email, password } = request.body as {
       email: string;
@@ -27,6 +25,17 @@ export default async function authRoutes(
       }
     );
 
-    return { user, token };
+    const userResponse = {
+      id: user.id,
+      fullName: user.fullName,
+      geres: user.geres,
+      admin: user.admin,
+      email: user.email,
+    };
+
+    return {
+      user: userResponse,
+      token,
+    };
   });
 }

@@ -31,6 +31,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const signIn = async (email: string, password: string) => {
     try {
       const response = await api.post("/login", { email, password });
+      console.log(response.data);
       if (response.data.error) {
         alert(response.data.error);
       } else {

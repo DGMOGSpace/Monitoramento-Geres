@@ -1,6 +1,16 @@
 import { cn } from "@/lib/utils";
+import { useState, useEffect } from "react";
+import { useAuth } from "@/hooks/auth/useAuth";
+import PrivacyTermsModal from "./PrivacyTermsModal";
 
 export function Footer() {
+  const { signed } = useAuth();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    setIsModalOpen(false);
+  }, [signed]);
+
   return (
     <footer
       className={cn(
@@ -35,12 +45,16 @@ export function Footer() {
       </div>
 
       <div className="flex gap-6 mt-4">
-        <a
-          href="#"
-          className="text-slate-500 hover:text-slate-700 transition-colors duration-200"
+        <p
+          onClick={() => setIsModalOpen(true)} // Atualização para abrir o modal
+          className="text-slate-500 hover:text-slate-700 transition-colors duration-200 cursor-pointer"
         >
           Política de Privacidade e Termos de Uso
-        </a>
+        </p>
+        <PrivacyTermsModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+        />
       </div>
     </footer>
   );

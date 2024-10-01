@@ -1,7 +1,8 @@
 export default interface UserInterface {
   id: string;
-  email: string;
-  password: string;
-  geres: string;
   fullName: string;
+  geres: string;
+  email: string;
+  admin: string;
+  token: string;
 }
