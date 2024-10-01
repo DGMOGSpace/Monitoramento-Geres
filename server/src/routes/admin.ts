@@ -5,19 +5,20 @@ const prisma = new PrismaClient();
 
 export default async function adminRoutes(fastify: FastifyInstance) {
   fastify.post("/users", async (request, reply) => {
-    const { fullName, password, geres, admin, email } = request.body as {
-      fullName: string;
-      password: string;
-      geres: string; // Mantenha como string inicialmente
-      admin: boolean;
-      email: string;
-    };
+    const { fullName, password, geres, cargo, setor, admin, email } =
+      request.body as {
+        fullName: string;
+        password: string;
+        geres: string;
+        cargo: string;
+        setor: string;
+        admin: boolean;
+        email: string;
+      };
 
     try {
-      // Converte geres de string para inteiro
       const geresInt = parseInt(geres, 10);
 
-      // Verifica se a conversão foi bem-sucedida
       if (isNaN(geresInt)) {
         return reply
           .status(400)
@@ -31,6 +32,8 @@ export default async function adminRoutes(fastify: FastifyInstance) {
           geres: geresInt,
           admin,
           email,
+          cargo,
+          setor,
         },
       });
       return reply.status(201).send(user);
@@ -83,7 +86,6 @@ export default async function adminRoutes(fastify: FastifyInstance) {
     }
   });
 
-  // DELETE - Deletar um usuário
   fastify.delete("/users/:id", async (request, reply) => {
     const { id } = request.params as { id: string };
 
@@ -98,7 +100,6 @@ export default async function adminRoutes(fastify: FastifyInstance) {
     }
   });
 
-  // READ - Obter logs
   fastify.get("/logs", async (request, reply) => {
     try {
       const logs = await prisma.log.findMany({
@@ -107,6 +108,8 @@ export default async function adminRoutes(fastify: FastifyInstance) {
           form: true,
         },
       });
+      console.log(logs);
+
       return reply.send(logs);
     } catch (error) {
       console.error("Erro ao buscar logs:", error);
@@ -114,7 +117,6 @@ export default async function adminRoutes(fastify: FastifyInstance) {
     }
   });
 
-  // READ - Obter todos os dataForms
   fastify.get("/dataForms", async (request, reply) => {
     try {
       const dataForms = await prisma.dataForm.findMany({

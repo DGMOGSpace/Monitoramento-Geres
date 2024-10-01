@@ -2,14 +2,13 @@ import { cn } from "@/lib/utils";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/auth/useAuth";
 import PrivacyTermsModal from "./PrivacyTermsModal";
-import { Link } from "react-router-dom";
 
 export function Footer() {
   const { signed } = useAuth();
-  const [isModalOpen, setIsModalOpen] = useState(!signed);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    setIsModalOpen(!signed);
+    setIsModalOpen(false);
   }, [signed]);
 
   return (
@@ -46,14 +45,16 @@ export function Footer() {
       </div>
 
       <div className="flex gap-6 mt-4">
-        <p className="text-slate-500 hover:text-slate-700 transition-colors duration-200">
+        <p
+          onClick={() => setIsModalOpen(true)} // Atualização para abrir o modal
+          className="text-slate-500 hover:text-slate-700 transition-colors duration-200 cursor-pointer"
+        >
           Política de Privacidade e Termos de Uso
         </p>
         <PrivacyTermsModal
           isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)} // Fecha o modal
+          onClose={() => setIsModalOpen(false)}
         />
-        <Link className="text-slate-500 hover:text-slate-700 transition-colors duration-200" to="/Admin">Área Administrador</Link>
       </div>
     </footer>
   );

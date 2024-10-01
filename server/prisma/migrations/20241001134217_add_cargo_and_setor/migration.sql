@@ -4,6 +4,9 @@ CREATE TABLE "User" (
     "fullName" TEXT NOT NULL,
     "password" TEXT NOT NULL,
     "geres" INTEGER NOT NULL,
+    "setor" TEXT NOT NULL,
+    "cargo" TEXT NOT NULL,
+    "admin" BOOLEAN NOT NULL,
     "email" TEXT NOT NULL,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );

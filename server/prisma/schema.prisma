@@ -12,11 +12,14 @@ model User {
   fullName  String
   password  String
   geres     Int
+  setor     String
+  cargo     String
   admin     Boolean
   email     String     @unique
   createdAt DateTime   @default(now())
   logs      Log[]
   dataForms DataForm[]
+  active    Boolean    @default(true)
 }
 
 model Log {

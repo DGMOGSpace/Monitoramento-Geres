@@ -17,6 +17,8 @@ export function AddUserForm() {
     geres: 0,
     admin: false,
     email: "",
+    cargo: "",
+    setor: "",
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -38,7 +40,7 @@ export function AddUserForm() {
   };
 
   return (
-    <Card className="shadow-md rounded-lg p-4 mb-6">
+    <Card className="shadow-md rounded-lg p-4 mb-6 h-5/6">
       <CardHeader>
         <CardTitle className="text-xl font-semibold">
           Adicionar Novo Usuário
@@ -54,6 +56,22 @@ export function AddUserForm() {
             name="fullName"
             placeholder="Nome Completo"
             value={newUser.fullName}
+            onChange={handleInputChange}
+            required
+          />
+          <Input
+            type="text"
+            name="cargo"
+            placeholder="Cargo"
+            value={newUser.cargo}
+            onChange={handleInputChange}
+            required
+          />
+          <Input
+            type="text"
+            name="setor"
+            placeholder="Setor"
+            value={newUser.setor}
             onChange={handleInputChange}
             required
           />

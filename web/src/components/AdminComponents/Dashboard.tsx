@@ -34,7 +34,7 @@ export function Dashboard() {
   }, []);
 
   return (
-    <Card className="shadow-md rounded-lg p-4 mb-6">
+    <Card className="shadow-md rounded-lg p-4 mb-6 h-5/6">
       <CardHeader>
         <CardTitle className="text-xl font-semibold">
           Últimos Envio de Dados por GERES
