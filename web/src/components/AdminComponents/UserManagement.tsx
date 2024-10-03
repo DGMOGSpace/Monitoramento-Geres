@@ -52,7 +52,6 @@ export function UserManagement() {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState<UserData | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [showActive, setShowActive] = useState(true); // Estado para o toggle
   const [searchEmail, setSearchEmail] = useState(""); // Estado para pesquisa
 
   useEffect(() => {
@@ -63,10 +62,8 @@ export function UserManagement() {
     fetchData();
   }, []);
 
-  const filteredUsers = userData.filter(
-    (user) =>
-      (showActive ? user.active : !user.active) &&
-      user.email.toLowerCase().includes(searchEmail.toLowerCase())
+  const filteredUsers = userData.filter((user) =>
+    user.email.toLowerCase().includes(searchEmail.toLowerCase())
   );
 
   const totalPages = Math.ceil(filteredUsers.length / USERS_PER_PAGE);
@@ -132,13 +129,7 @@ export function UserManagement() {
               onChange={(e) => setSearchEmail(e.target.value)}
               className="mr-2"
             />
-            <Toggle
-              checked={showActive}
-              onCheckedChange={setShowActive}
-              className="mr-2"
-            >
-              {showActive ? "Mostrar Ativos" : "Mostrar Inativos"}
-            </Toggle>
+            <Toggle>Ativos</Toggle>
           </div>
           <Table>
             <TableHeader>
@@ -184,7 +175,6 @@ export function UserManagement() {
         <Pagination>
           <PaginationPrevious
             onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-            disabled={currentPage === 1}
           />
           <PaginationContent>
             {Array.from({ length: totalPages }, (_, index) => (
@@ -202,7 +192,6 @@ export function UserManagement() {
             onClick={() =>
               setCurrentPage((prev) => Math.min(prev + 1, totalPages))
             }
-            disabled={currentPage === totalPages}
           />
         </Pagination>
       </Card>

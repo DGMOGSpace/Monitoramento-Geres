@@ -9,7 +9,7 @@ interface GeresData {
 
 export function Dashboard() {
   const [geresData, setGeresData] = useState<GeresData[]>([]);
-  
+
   const totalGerencias = Array.from({ length: 12 }, (_, i) => i + 1); // Cria um array de 1 a 12
 
   useEffect(() => {
@@ -24,7 +24,7 @@ export function Dashboard() {
     fetchData();
   }, []);
 
-  const getRowClassName = (lastReply: string) => {
+  const getCardClassName = (lastReply: string) => {
     const lastReplyDate = new Date(lastReply);
     const currentDate = new Date();
 
@@ -56,37 +56,32 @@ export function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-4">
-      <h1 className="text-2xl font-bold mb-4">Últimos Envios de Dados por GERES</h1>
-      <div className="w-full max-w-2xl bg-white rounded-lg shadow-lg overflow-hidden">
-        <ul className="divide-y divide-gray-200">
-          {totalGerencias.map((geres) => {
-            const geresInfo = geresData.find((data) => data.geres === geres);
-            const lastReply = geresInfo ? geresInfo.lastReply : null;
-            const fullName = geresInfo ? geresInfo.fullName : "Não disponível";
-            const rowClass = getRowClassName(lastReply || "");
+    <div className="flex flex-col items-center justify-center py-6 rounded bg-white ">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3  max-w-5xl">
+        {totalGerencias.map((geres) => {
+          const geresInfo = geresData.find((data) => data.geres === geres);
+          const lastReply = geresInfo ? geresInfo.lastReply : null;
+          const fullName = geresInfo ? geresInfo.fullName : "Não disponível";
+          const cardClass = getCardClassName(lastReply || "");
 
-            return (
-              <li key={geres} className={`flex justify-between items-center p-4 ${rowClass}`}>
-                <div>
-                  <h2 className="text-lg font-semibold">GERES {geres}</h2>
-                  <p className="text-sm text-gray-600">
-                    Última Data de Envio: {lastReply ? new Date(lastReply).toLocaleString() : "Não disponível"}
-                  </p>
-                  <p className="text-sm text-gray-600">Usuário: {fullName}</p>
-                </div>
-                {rowClass === "bg-red-100" && (
-                  <button
-                    onClick={() => handleSendAlert(geres)}
-                    className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition duration-200"
-                  >
-                    Enviar Alerta
-                  </button>
-                )}
-              </li>
-            );
-          })}
-        </ul>
+          return (
+            <div key={geres} className={`p-4 rounded-lg shadow-md transition-transform transform ${cardClass}`}>
+              <h2 className="text-xl font-semibold text-gray-800">GERES {geres}</h2>
+              <p className="text-md text-gray-600">
+                Última Data de Envio: {lastReply ? new Date(lastReply).toLocaleString() : "Não disponível"}
+              </p>
+              <p className="text-sm text-gray-500">Usuário: {fullName}</p>
+              {cardClass === "bg-red-100" && (
+                <button
+                  onClick={() => handleSendAlert(geres)}
+                  className="mt-2 bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition duration-200"
+                >
+                  Enviar Alerta
+                </button>
+              )}
+            </div>
+          );
+        })}
       </div>
     </div>
   );

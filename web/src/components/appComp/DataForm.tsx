@@ -31,8 +31,10 @@ import {
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
+// Esquema de validação usando Zod
 const FormSchema = z.object({
-  data: z.string().nonempty("Data é obrigatória."),
+  startDate: z.string().nonempty("Data de início é obrigatória."),
+  endDate: z.string().nonempty("Data de término é obrigatória."),
 });
 
 interface IndicatorValue {
@@ -45,13 +47,16 @@ const DataForm = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [valuesList, setValuesList] = useState<IndicatorValue[]>([]);
 
+  // Usando react-hook-form com Zod para validação
   const form = useForm({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      data: "",
+      startDate: "",
+      endDate: "",
     },
   });
 
+  // Função para manipular a mudança de valor dos indicadores
   const handleValueChange = (
     index: number,
     field: keyof IndicatorValue,
@@ -62,6 +67,18 @@ const DataForm = () => {
     setValuesList(newValuesList);
   };
 
+  // Verificar se todos os campos (datas e indicadores) estão preenchidos
+  const allFieldsFilled =
+    form.getValues().startDate &&
+    form.getValues().endDate &&
+    valuesList.length ===
+      Object.keys(dados.temasIndicadores).reduce(
+        (acc, key) => acc + dados.temasIndicadores[key].length,
+        0
+      ) &&
+    valuesList.every((val) => val.valor); // Verifica se todos os valores dos indicadores foram preenchidos
+
+  // Submissão do formulário
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     const payload = {
       ...data,
@@ -70,12 +87,9 @@ const DataForm = () => {
     };
 
     await api.post("/addData", payload);
-    console.log(payload)
+    console.log(payload);
     setIsModalOpen(false);
   };
-
-  const allFieldsFilled =
-    form.getValues().data && valuesList.every((val) => val.valor);
 
   return (
     <div className="p-8 rounded-lg shadow-md w-3/6 mx-auto my-10 bg-white">
@@ -84,81 +98,87 @@ const DataForm = () => {
       </h2>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          {/* Accordion para os indicadores */}
           <Accordion type="multiple">
             {Object.entries(dados.temasIndicadores).map(
-              ([tema, indicadores]) => {
-                const isFilled = indicadores.every((indicador) => {
-                  const value = valuesList.find(
-                    (item) => item.indicador === indicador
-                  );
-                  return value && value.valor;
-                });
-
-                return (
-                  <AccordionItem key={tema} value={tema}>
-                    <AccordionTrigger
-                      className={`relative flex justify-between items-center p-4 rounded-lg transition-colors ${
-                        isFilled ? "bg-green-300" : "bg-white"
-                      } shadow hover:bg-green-100`}
+              ([tema, indicadores], temaIndex) => (
+                <AccordionItem key={tema} value={tema}>
+                  <AccordionTrigger
+                    className={`relative flex justify-between items-center p-4 rounded-lg transition-colors ${
+                      indicadores.every((indicador) =>
+                        valuesList.some(
+                          (item) => item.indicador === indicador && item.valor
+                        )
+                      )
+                        ? "bg-green-300"
+                        : "bg-white"
+                    } shadow hover:bg-green-100`}
+                  >
+                    <span className="text-lg font-semibold hover:underline text-gray-700">
+                      {tema}
+                    </span>
+                    <span
+                      className={`text-green-500 absolute right-10 transition-opacity duration-200 ${
+                        indicadores.every((indicador) =>
+                          valuesList.some(
+                            (item) => item.indicador === indicador && item.valor
+                          )
+                        )
+                          ? "opacity-100"
+                          : "opacity-0"
+                      }`}
+                      style={{ textDecoration: "none" }}
                     >
-                      <span className="text-lg font-semibold hover:underline text-gray-700">
-                        {tema}
-                      </span>
-                      <span
-                        className={`text-green-500 absolute right-10 transition-opacity duration-200 ${
-                          isFilled ? "opacity-100" : "opacity-0"
-                        }`}
-                        style={{ textDecoration: "none" }}
-                      >
-                        ✓
-                      </span>
-                    </AccordionTrigger>
-                    <AccordionContent className="p-4">
-                      {indicadores.map((indicador) => (
-                        <div key={indicador} className="mb-4">
-                          <FormLabel className="text-gray-700 font-medium">
-                            {indicador}
-                          </FormLabel>
-                          <FormControl>
-                            <Input
-                              type="number"
-                              min={0}
-                              placeholder="Valor"
-                              className="border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-300 focus:outline-none w-full"
-                              onChange={(e) => {
-                                const index = valuesList.findIndex(
-                                  (item) => item.indicador === indicador
+                      ✓
+                    </span>
+                  </AccordionTrigger>
+                  <AccordionContent className="p-4">
+                    {indicadores.map((indicador, indicadorIndex) => (
+                      <div key={indicador} className="mb-4">
+                        <FormLabel className="text-gray-700 font-medium">
+                          {indicador}
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            min={0}
+                            placeholder="Valor"
+                            className="border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-300 focus:outline-none w-full"
+                            onChange={(e) => {
+                              const index = valuesList.findIndex(
+                                (item) => item.indicador === indicador
+                              );
+                              if (index >= 0) {
+                                handleValueChange(
+                                  index,
+                                  "valor",
+                                  e.target.value
                                 );
-                                if (index >= 0) {
-                                  handleValueChange(
-                                    index,
-                                    "valor",
-                                    e.target.value
-                                  );
-                                } else {
-                                  setValuesList([
-                                    ...valuesList,
-                                    { indicador, valor: e.target.value },
-                                  ]);
-                                }
-                              }}
-                            />
-                          </FormControl>
-                        </div>
-                      ))}
-                    </AccordionContent>
-                  </AccordionItem>
-                );
-              }
+                              } else {
+                                setValuesList([
+                                  ...valuesList,
+                                  { indicador, valor: e.target.value },
+                                ]);
+                              }
+                            }}
+                          />
+                        </FormControl>
+                      </div>
+                    ))}
+                  </AccordionContent>
+                </AccordionItem>
+              )
             )}
           </Accordion>
+
+          {/* Campo de data de início */}
           <FormField
             control={form.control}
-            name="data"
+            name="startDate"
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="text-gray-700 font-medium">
-                  Data
+                  Data de Início
                 </FormLabel>
                 <FormControl>
                   <Input
@@ -174,6 +194,30 @@ const DataForm = () => {
             )}
           />
 
+          {/* Campo de data de término */}
+          <FormField
+            control={form.control}
+            name="endDate"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-gray-700 font-medium">
+                  Data de Término
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    type="date"
+                    min="2024-01-01"
+                    max="2026-12-31"
+                    className="border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-300 focus:outline-none"
+                  />
+                </FormControl>
+                <FormMessage className="text-red-500" />
+              </FormItem>
+            )}
+          />
+
+          {/* Botão para abrir o modal de confirmação */}
           <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
             <DialogTrigger asChild>
               <Button
@@ -202,7 +246,10 @@ const DataForm = () => {
               </DialogHeader>
               <div className="space-y-4">
                 <p>
-                  <strong>Data:</strong> {form.getValues().data}
+                  <strong>Data de Início:</strong> {form.getValues().startDate}
+                </p>
+                <p>
+                  <strong>Data de Término:</strong> {form.getValues().endDate}
                 </p>
                 <div>
                   <strong>Valores:</strong>
@@ -224,9 +271,8 @@ const DataForm = () => {
                   Cancelar
                 </Button>
                 <Button
-                  type="submit"
                   onClick={form.handleSubmit(onSubmit)}
-                  className="bg-blue-500 text-white hover:bg-blue-600"
+                  className="bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300 rounded-md shadow-md"
                 >
                   Confirmar Envio
                 </Button>
