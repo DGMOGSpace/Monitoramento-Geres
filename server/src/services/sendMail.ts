@@ -1,5 +1,6 @@
 import nodemailer from "nodemailer";
 import { PrismaClient } from "@prisma/client";
+require("dotenv").config();
 
 const prisma = new PrismaClient();
 
@@ -13,8 +14,8 @@ async function sendEmail(email: string, password: string): Promise<void> {
     port: 587,
     secure: false,
     auth: {
-      user: "silvaugusto222@gmail.com",
-      pass: "cyri ayau hcro cszn ",
+      user: process.env["EMAIL_USER"],
+      pass: process.env["EMAIL_PASS"],
     },
   });
 

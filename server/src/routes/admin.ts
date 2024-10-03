@@ -3,8 +3,15 @@ import { PrismaClient } from "@prisma/client";
 import crypto from "crypto";
 import { sendEmail } from "../services/sendMail";
 import nodemailer from "nodemailer";
+require("dotenv").config();
 
 const prisma = new PrismaClient();
+
+interface GeresData {
+  geres: number; // Ajuste o tipo conforme sua definição no banco
+  fullName: string;
+  lastReply: Date; // Use Date para representar datas
+}
 
 export default async function adminRoutes(fastify: FastifyInstance) {
   fastify.post("/users", async (request, reply) => {
@@ -151,35 +158,26 @@ export default async function adminRoutes(fastify: FastifyInstance) {
 
   fastify.get("/geres-data", async (request, reply) => {
     try {
-      const geres = await prisma.dataForm.findMany({
-        select: {
-          createdAt: true,
-          idUser: true,
-        },
-      });
-      console.log(geres);
+      const geres = await prisma.$queryRaw<GeresData[]>`SELECT 
+        u.geres,
+        u.fullName,
+        df.createdAt AS lastReply
+      FROM 
+        DataForm df
+      JOIN 
+        User u ON df.idUser = u.id
+      WHERE 
+        df.createdAt = (
+            SELECT MAX(createdAt)
+            FROM DataForm
+            WHERE idUser IN (
+                SELECT id
+                FROM User
+                WHERE geres = u.geres
+            )
+        );`;
 
-      const geresData = await Promise.all(
-        geres.map(async (item: { idUser: any; createdAt: any }) => {
-          const user = await prisma.user.findFirst({
-            where: {
-              id: item.idUser,
-            },
-            select: {
-              geres: true,
-              fullName: true,
-            },
-          });
-
-          return {
-            lastReply: item.createdAt,
-            geres: user ? user.geres : null,
-            fullName: user ? user.fullName : null,
-          };
-        })
-      );
-
-      reply.status(200).send(geresData);
+      reply.status(200).send(geres);
     } catch (error) {
       console.error("Erro ao buscar dados da GERES:", error);
       reply.status(500).send({ error: "Erro ao buscar dados." });
@@ -214,13 +212,13 @@ export default async function adminRoutes(fastify: FastifyInstance) {
         port: 587,
         secure: false,
         auth: {
-          user: process.env.EMAIL_USER,
-          pass: process.env.EMAIL_PASS,
+          user: process.env["EMAIL_USER"],
+          pass: process.env["EMAIL_PASS"],
         },
       });
 
       const mailOptions = {
-        from: process.env.EMAIL_USER,
+        from: process.env["EMAIL_USER"],
         to: emails,
         subject: `Alerta: Data de Vencimento Próxima para GERES ${geres}`,
         text: `A data de vencimento para a GERES ${geres} está próxima. Por favor, envie os dados o quanto antes.`,

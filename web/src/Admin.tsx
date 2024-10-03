@@ -16,7 +16,7 @@ export function Admin() {
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
+    <div className="flex h-screen overflow-hidden bg-gray-100">
       <aside className="flex flex-col w-64 bg-white shadow-lg p-6">
         <img src="gpr_logo.png" alt="Logo GPR" className="p-5" />
         <nav className="flex-grow flex flex-col mt-5 space-y-4">

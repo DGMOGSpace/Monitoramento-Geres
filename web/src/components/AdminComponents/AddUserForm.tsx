@@ -8,13 +8,13 @@ import {
   SelectValue,
   SelectContent,
   SelectItem,
-} from "@/components/ui/select"; // Importando os componentes do Shadcn
+} from "@/components/ui/select";
 import { api } from "@/api/api";
 
 export function AddUserForm() {
   const [newUser, setNewUser] = useState({
     fullName: "",
-    geres: "", // Mudei para string para o select
+    geres: "",
     admin: false,
     email: "",
     cargo: "",
@@ -35,8 +35,8 @@ export function AddUserForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setErrorMessage(null); // Limpa a mensagem de erro antes de enviar
-    setSuccessMessage(null); // Limpa a mensagem de sucesso antes de enviar
+    setErrorMessage(null);
+    setSuccessMessage(null);
 
     try {
       const response = await api.post("/users", newUser);
@@ -47,7 +47,7 @@ export function AddUserForm() {
       );
       setNewUser({
         fullName: "",
-        geres: "", // Reseta para string
+        geres: "",
         admin: false,
         email: "",
         cargo: "",
@@ -55,7 +55,6 @@ export function AddUserForm() {
       });
     } catch (error) {
       console.error("Erro ao adicionar usuário:", error);
-      // Atualiza a mensagem de erro se o usuário já existir
       if (error.response && error.response.status === 400) {
         setErrorMessage("Usuário já existe com este email.");
       } else {
