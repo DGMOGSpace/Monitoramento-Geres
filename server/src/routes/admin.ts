@@ -5,16 +5,14 @@ const prisma = new PrismaClient();
 
 export default async function adminRoutes(fastify: FastifyInstance) {
   fastify.post("/users", async (request, reply) => {
-    const { fullName, password, geres, cargo, setor, admin, email } =
-      request.body as {
-        fullName: string;
-        password: string;
-        geres: string;
-        cargo: string;
-        setor: string;
-        admin: boolean;
-        email: string;
-      };
+    const { fullName, geres, cargo, setor, admin, email } = request.body as {
+      fullName: string;
+      geres: string;
+      cargo: string;
+      setor: string;
+      admin: boolean;
+      email: string;
+    };
 
     try {
       const geresInt = parseInt(geres, 10);
@@ -28,12 +26,12 @@ export default async function adminRoutes(fastify: FastifyInstance) {
       const user = await prisma.user.create({
         data: {
           fullName,
-          password,
           geres: geresInt,
           admin,
           email,
           cargo,
           setor,
+          password: "",
         },
       });
       return reply.status(201).send(user);
