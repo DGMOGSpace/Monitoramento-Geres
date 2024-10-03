@@ -10,8 +10,8 @@ datasource db {
 model User {
   id             Int        @id @default(autoincrement())
   fullName       String
-  password       String     @default("")
-  active         Boolean    @default(false)
+  password       String
+  active         Boolean    @default(true)
   modifyPassword Boolean    @default(false)
   geres          Int
   setor          String

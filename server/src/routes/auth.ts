@@ -33,7 +33,6 @@ export default async function authRoutes(fastify: FastifyInstance) {
         where: { email },
         data: {
           password,
-          modifyPassword: true,
           active: true,
         },
       });

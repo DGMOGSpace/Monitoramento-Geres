@@ -31,8 +31,9 @@ const AuthForm = ({
     e.preventDefault();
     setLoading(true);
     try {
-      await signIn(email, password);
+      await signIn(email, password.trim());
       setSuccessMessage("Usuário cadastrado e senha registrada.");
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       setError("Erro ao fazer login.");
     } finally {

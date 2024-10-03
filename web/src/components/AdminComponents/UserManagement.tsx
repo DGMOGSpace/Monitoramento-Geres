@@ -24,14 +24,26 @@ import {
   DialogOverlay,
 } from "@/components/ui/dialog";
 import { Input } from "../ui/input";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationLink,
+  PaginationItem,
+  PaginationPrevious,
+  PaginationNext,
+} from "@/components/ui/pagination";
+import { Toggle } from "@/components/ui/toggle"; // Importe o toggle
 
 interface UserData {
-  id: number; // Adicione o ID do usuário
+  id: number;
   fullName: string;
   email: string;
   geres: number;
-  setor: string; // Adicionando o campo "setor"
+  setor: string;
+  active: boolean; // Adicione o campo active
 }
+
+const USERS_PER_PAGE = 5;
 
 export function UserManagement() {
   const [userData, setUserData] = useState<UserData[]>([]);
@@ -39,6 +51,9 @@ export function UserManagement() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState<UserData | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [showActive, setShowActive] = useState(true); // Estado para o toggle
+  const [searchEmail, setSearchEmail] = useState(""); // Estado para pesquisa
 
   useEffect(() => {
     const fetchData = async () => {
@@ -47,6 +62,19 @@ export function UserManagement() {
     };
     fetchData();
   }, []);
+
+  const filteredUsers = userData.filter(
+    (user) =>
+      (showActive ? user.active : !user.active) &&
+      user.email.toLowerCase().includes(searchEmail.toLowerCase())
+  );
+
+  const totalPages = Math.ceil(filteredUsers.length / USERS_PER_PAGE);
+
+  const currentUsers = filteredUsers.slice(
+    (currentPage - 1) * USERS_PER_PAGE,
+    currentPage * USERS_PER_PAGE
+  );
 
   const handleEditUser = (user: UserData) => {
     setEditingUser(user);
@@ -75,7 +103,7 @@ export function UserManagement() {
 
   const handleDeleteUser = async () => {
     if (userToDelete) {
-      await api.delete(`/users/${userToDelete.id}`);
+      await api.put(`/removeUsers/${userToDelete.id}`);
       setUserData((prevData) =>
         prevData.filter((user) => user.id !== userToDelete.id)
       );
@@ -86,7 +114,7 @@ export function UserManagement() {
 
   return (
     <>
-      <Card className="shadow-md rounded-lg p-4 mb-6 h-5/6">
+      <Card className="shadow-md rounded-lg p-4 mb-6 overflow-y-scroll">
         <CardHeader>
           <CardTitle className="text-xl font-semibold">
             Gerenciamento de Usuários
@@ -96,6 +124,22 @@ export function UserManagement() {
           </CardDescription>
         </CardHeader>
         <CardContent>
+          <div className="flex mb-4">
+            <Input
+              type="text"
+              placeholder="Pesquisar por email"
+              value={searchEmail}
+              onChange={(e) => setSearchEmail(e.target.value)}
+              className="mr-2"
+            />
+            <Toggle
+              checked={showActive}
+              onCheckedChange={setShowActive}
+              className="mr-2"
+            >
+              {showActive ? "Mostrar Ativos" : "Mostrar Inativos"}
+            </Toggle>
+          </div>
           <Table>
             <TableHeader>
               <TableRow>
@@ -106,19 +150,27 @@ export function UserManagement() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {userData.map((user) => (
-                <TableRow key={user.id}>
+              {currentUsers.map((user) => (
+                <TableRow
+                  key={user.id}
+                  className={!user.active ? "bg-gray-200" : ""}
+                >
                   <TableCell>{user.geres}</TableCell>
                   <TableCell>{user.fullName}</TableCell>
                   <TableCell>{user.email}</TableCell>
                   <TableCell>
-                    <Button onClick={() => handleEditUser(user)}>Editar</Button>
+                    <Button
+                      className="bg-blue-500 hover:bg-blue-700"
+                      onClick={() => handleEditUser(user)}
+                    >
+                      Editar
+                    </Button>
                     <Button
                       onClick={() => {
                         setUserToDelete(user);
                         setIsDeleteDialogOpen(true);
                       }}
-                      className="ml-2 bg-red-600 text-white hover:bg-red-700"
+                      className="ml-2 bg-red-600 text-white hover:bg-red-500"
                     >
                       Deletar
                     </Button>
@@ -128,6 +180,31 @@ export function UserManagement() {
             </TableBody>
           </Table>
         </CardContent>
+
+        <Pagination>
+          <PaginationPrevious
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+          />
+          <PaginationContent>
+            {Array.from({ length: totalPages }, (_, index) => (
+              <PaginationItem key={index}>
+                <PaginationLink
+                  onClick={() => setCurrentPage(index + 1)}
+                  isActive={currentPage === index + 1}
+                >
+                  {index + 1}
+                </PaginationLink>
+              </PaginationItem>
+            ))}
+          </PaginationContent>
+          <PaginationNext
+            onClick={() =>
+              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+            }
+            disabled={currentPage === totalPages}
+          />
+        </Pagination>
       </Card>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -201,13 +278,14 @@ export function UserManagement() {
                 <p className="font-semibold">Nome: {userToDelete.fullName}</p>
                 <p>Geres: {userToDelete.geres}</p>
                 <p>Setor: {userToDelete.setor}</p>
+                <p>Email: {userToDelete.email}</p>
               </div>
             </>
           )}
           <div className="flex justify-end mt-6">
             <Button
               onClick={handleDeleteUser}
-              className="bg-red-600 text-white hover:bg-red-700"
+              className="bg-red-600 text-white hover:bg-red-500"
             >
               Deletar
             </Button>
