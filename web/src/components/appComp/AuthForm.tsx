@@ -17,8 +17,8 @@ const AuthForm = ({
   setLoading: (loading: boolean) => void;
 }) => {
   const dadosRenan = {
-    email: "renan@gmail.com",
-    ramal: "84567",
+    email: "geres_dgmog@gmail.com",
+    ramal: "3184-0054",
   };
   const { signIn } = useAuth();
   const [email, setEmail] = useState("");
@@ -78,7 +78,7 @@ const AuthForm = ({
           <DialogHeader>
             <DialogTitle>Solicitar Acesso</DialogTitle>
             <DialogDescription>
-              Entre em contato com Renan para se identificar e solicitar acesso:
+              Entre em contato para se identificar e solicitar acesso:
             </DialogDescription>
           </DialogHeader>
           <div className="mt-4 flex flex-col space-y-3">

@@ -40,17 +40,17 @@ export function Dashboard() {
       lastReplyDate.getFullYear() === currentDate.getFullYear() &&
       lastReplyDate.getMonth() === currentDate.getMonth()
     ) {
-      return "bg-green-100"; // Ativo
+      return "bg-green-100";
     }
 
     if (
       lastReplyDate.getFullYear() === currentDate.getFullYear() &&
       lastReplyDate.getMonth() === currentDate.getMonth() - 1
     ) {
-      return "bg-red-100"; // Inativo
+      return "bg-red-100";
     }
 
-    return "bg-gray-100"; // Não disponível
+    return "bg-gray-100";
   };
 
   const handleSendAlert = async (geres: number) => {
@@ -80,7 +80,8 @@ export function Dashboard() {
                     GERES {geres}
                   </CardTitle>
                   <CardDescription className="text-sm text-gray-600">
-                    Última Data de Envio:{" "}
+                    Última Data de Envio:
+                    <p></p>
                     {lastReply
                       ? new Date(lastReply).toLocaleString()
                       : "Não disponível"}
