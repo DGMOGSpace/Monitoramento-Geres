@@ -27,8 +27,9 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "@/components/ui/pagination"; // Importando o novo componente de paginação
+} from "@/components/ui/pagination";
 import { useState, useEffect } from "react";
+import { Input } from "../ui/input";
 
 interface logsData {
   idUser: string;
@@ -69,6 +70,7 @@ export function Logs() {
   const [logsPerPage] = useState(10);
   const [selectedLog, setSelectedLog] = useState<logsData | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [searchEmail, setSearchEmail] = useState(""); // Estado para armazenar o email pesquisado
 
   useEffect(() => {
     const fetchData = async () => {
@@ -90,77 +92,94 @@ export function Logs() {
 
   const indexOfLastLog = currentPage * logsPerPage;
   const indexOfFirstLog = indexOfLastLog - logsPerPage;
-  const currentLogs = logsData.slice(indexOfFirstLog, indexOfLastLog);
+
+  // Filtrar os logs com base no email pesquisado
+  const filteredLogs = logsData.filter((log) =>
+    log.user.email.toLowerCase().includes(searchEmail.toLowerCase())
+  );
+
+  const currentLogs = filteredLogs.slice(indexOfFirstLog, indexOfLastLog);
 
   return (
-    <Card className="shadow-md rounded-lg p-4 mb-6 h-5/6">
-      <CardHeader>
-        <CardTitle className="text-xl font-semibold">Logs de Envio</CardTitle>
-        <CardDescription className="text-gray-600">
-          Veja os registros de envio de dados.
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>ID Formulário</TableHead>
-              <TableHead>GERES</TableHead>
-              <TableHead>Usuário</TableHead>
-              <TableHead>Data de Referência</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {currentLogs.map((log, index) => (
-              <TableRow
-                key={index}
-                onClick={() => handleRowClick(log)}
-                className="cursor-pointer"
-              >
-                <TableCell>{log.idForm}</TableCell>
-                <TableCell>{log.user.geres}</TableCell>
-                <TableCell>{log.user.fullName}</TableCell>
-                <TableCell>{log.form.dataRef}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+    <>
+      <Card className="shadow-md rounded-lg p-4 mb-6 h-full grid grid-rows-[1fr_6fr_1fr]">
+        <CardHeader>
+          <CardTitle className="text-xl font-semibold">Logs de Envio</CardTitle>
+          <CardDescription className="text-gray-600">
+            Veja os registros de envio de dados.
+          </CardDescription>
+        </CardHeader>
 
-        <Pagination className="flex items-end">
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious
-                href="#"
-                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-              />
-            </PaginationItem>
-            {Array.from(
-              { length: Math.ceil(logsData.length / logsPerPage) },
-              (_, index) => (
-                <PaginationItem key={index}>
-                  <PaginationLink
-                    href="#"
-                    onClick={() => setCurrentPage(index + 1)}
-                    isActive={currentPage === index + 1}
-                  >
-                    {index + 1}
-                  </PaginationLink>
-                </PaginationItem>
-              )
-            )}
-            <PaginationItem>
-              <PaginationNext
-                href="#"
-                onClick={() =>
-                  setCurrentPage((prev) =>
-                    Math.min(prev + 1, Math.ceil(logsData.length / logsPerPage))
+        <CardContent className="overflow-y-auto">
+          <div className="flex mb-4">
+            <Input
+              type="text"
+              placeholder="Pesquisar por email"
+              value={searchEmail}
+              onChange={(e) => setSearchEmail(e.target.value)} // Atualiza o estado com o valor do input
+              className="mr-2"
+            />
+            {/* Aqui você pode adicionar o Toggle se desejar */}
+          </div>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>ID Formulário</TableHead>
+                <TableHead>GERES</TableHead>
+                <TableHead>Usuário</TableHead>
+                <TableHead>Data de Referência</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {currentLogs.map((log, index) => (
+                <TableRow
+                  key={index}
+                  onClick={() => handleRowClick(log)}
+                  className="cursor-pointer"
+                >
+                  <TableCell>{log.idForm}</TableCell>
+                  <TableCell>{log.user.geres}</TableCell>
+                  <TableCell>{log.user.fullName}</TableCell>
+                  <TableCell>{log.form.dataRef}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+
+        <div className="p-4">
+          <Pagination>
+            <PaginationPrevious
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            />
+            <PaginationContent>
+              {Array.from(
+                { length: Math.ceil(filteredLogs.length / logsPerPage) }, // Usar filteredLogs para a contagem de páginas
+                (_, index) => (
+                  <PaginationItem key={index}>
+                    <PaginationLink
+                      onClick={() => setCurrentPage(index + 1)}
+                      isActive={currentPage === index + 1}
+                    >
+                      {index + 1}
+                    </PaginationLink>
+                  </PaginationItem>
+                )
+              )}
+            </PaginationContent>
+            <PaginationNext
+              onClick={() =>
+                setCurrentPage((prev) =>
+                  Math.min(
+                    prev + 1,
+                    Math.ceil(filteredLogs.length / logsPerPage)
                   )
-                }
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
-      </CardContent>
+                )
+              }
+            />
+          </Pagination>
+        </div>
+      </Card>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent>
@@ -238,8 +257,7 @@ export function Logs() {
                 </li>
                 <li>
                   <strong>
-                    Engajamento Gestores Reuniões Grupos Condutores
-                    Macrorregionais:
+                    Engajamento Gestores Reuniões Grupos Condutores:
                   </strong>{" "}
                   {
                     selectedLog.form
@@ -252,7 +270,7 @@ export function Logs() {
                 </li>
                 <li>
                   <strong>
-                    Participação Gestores Reuniões Câmara Técnica CT CIR:
+                    Participação Gestores Reuniões Câmara Técnica CT Cir:
                   </strong>{" "}
                   {
                     selectedLog.form
@@ -268,6 +286,6 @@ export function Logs() {
           )}
         </DialogContent>
       </Dialog>
-    </Card>
+    </>
   );
 }

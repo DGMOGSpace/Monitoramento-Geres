@@ -22,6 +22,7 @@ export function AddUserForm() {
   });
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false); // Estado para controle de carregamento
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -37,6 +38,7 @@ export function AddUserForm() {
     e.preventDefault();
     setErrorMessage(null);
     setSuccessMessage(null);
+    setLoading(true); // Inicia o carregamento
 
     try {
       const response = await api.post("/users", newUser);
@@ -53,18 +55,20 @@ export function AddUserForm() {
         cargo: "",
         setor: "",
       });
-    } catch (error) {
+    } catch (error: unknown) { // Especificando que o erro é do tipo desconhecido
       console.error("Erro ao adicionar usuário:", error);
-      if (error.response && error.response.status === 400) {
-        setErrorMessage("Usuário já existe com este email.");
+      if (error instanceof Error) { // Verificando se o erro é uma instância de Error
+        setErrorMessage(error.message); // Mostra a mensagem do erro
       } else {
         setErrorMessage("Erro ao adicionar usuário. Tente novamente.");
       }
+    } finally {
+      setLoading(false); // Finaliza o carregamento
     }
   };
 
   return (
-    <Card className="shadow-md rounded-lg p-4 mb-6 ">
+    <Card className="shadow-md rounded-lg p-4 mb-6 h-full">
       <CardHeader>
         <CardTitle className="text-xl font-semibold">
           Adicionar Novo Usuário
@@ -111,8 +115,6 @@ export function AddUserForm() {
             required
           >
             <SelectTrigger className="w-80">
-              {" "}
-              {/* Aumentando a largura do Select */}
               <SelectValue placeholder="Selecione a GERES" />
             </SelectTrigger>
             <SelectContent className="absolute z-10 mt-1 w-80 h-48">
@@ -167,8 +169,9 @@ export function AddUserForm() {
           <Button
             type="submit"
             className="bg-blue-600 text-white hover:bg-blue-700"
+            disabled={loading} // Desabilita o botão enquanto carrega
           >
-            Criar Usuário
+            {loading ? "Carregando..." : "Criar Usuário"}
           </Button>
         </form>
 

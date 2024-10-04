@@ -32,7 +32,7 @@ import {
   PaginationPrevious,
   PaginationNext,
 } from "@/components/ui/pagination";
-import { Toggle } from "@/components/ui/toggle"; // Importe o toggle
+import { Toggle } from "@/components/ui/toggle";
 
 interface UserData {
   id: number;
@@ -40,7 +40,7 @@ interface UserData {
   email: string;
   geres: number;
   setor: string;
-  active: boolean; // Adicione o campo active
+  active: boolean;
 }
 
 const USERS_PER_PAGE = 5;
@@ -52,7 +52,7 @@ export function UserManagement() {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState<UserData | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [searchEmail, setSearchEmail] = useState(""); // Estado para pesquisa
+  const [searchEmail, setSearchEmail] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -111,7 +111,7 @@ export function UserManagement() {
 
   return (
     <>
-      <Card className="shadow-md rounded-lg p-4 mb-6 overflow-y-scroll">
+      <Card className="shadow-md rounded-lg p-4 mb-6 h-full grid grid-rows-[1fr_6fr]">
         <CardHeader>
           <CardTitle className="text-xl font-semibold">
             Gerenciamento de Usuários
@@ -120,7 +120,8 @@ export function UserManagement() {
             Administre os usuários do sistema.
           </CardDescription>
         </CardHeader>
-        <CardContent>
+
+        <CardContent className="overflow-y-auto">
           <div className="flex mb-4">
             <Input
               type="text"
@@ -172,28 +173,30 @@ export function UserManagement() {
           </Table>
         </CardContent>
 
-        <Pagination>
-          <PaginationPrevious
-            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-          />
-          <PaginationContent>
-            {Array.from({ length: totalPages }, (_, index) => (
-              <PaginationItem key={index}>
-                <PaginationLink
-                  onClick={() => setCurrentPage(index + 1)}
-                  isActive={currentPage === index + 1}
-                >
-                  {index + 1}
-                </PaginationLink>
-              </PaginationItem>
-            ))}
-          </PaginationContent>
-          <PaginationNext
-            onClick={() =>
-              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-            }
-          />
-        </Pagination>
+        <div className="p-4">
+          <Pagination>
+            <PaginationPrevious
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            />
+            <PaginationContent>
+              {Array.from({ length: totalPages }, (_, index) => (
+                <PaginationItem key={index}>
+                  <PaginationLink
+                    onClick={() => setCurrentPage(index + 1)}
+                    isActive={currentPage === index + 1}
+                  >
+                    {index + 1}
+                  </PaginationLink>
+                </PaginationItem>
+              ))}
+            </PaginationContent>
+            <PaginationNext
+              onClick={() =>
+                setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+              }
+            />
+          </Pagination>
+        </div>
       </Card>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -266,25 +269,24 @@ export function UserManagement() {
               <div className="mt-4">
                 <p className="font-semibold">Nome: {userToDelete.fullName}</p>
                 <p>Geres: {userToDelete.geres}</p>
-                <p>Setor: {userToDelete.setor}</p>
                 <p>Email: {userToDelete.email}</p>
+              </div>
+              <div className="flex justify-end mt-6">
+                <Button
+                  onClick={handleDeleteUser}
+                  className="bg-red-600 text-white hover:bg-red-500"
+                >
+                  Deletar
+                </Button>
+                <Button
+                  onClick={() => setIsDeleteDialogOpen(false)}
+                  className="ml-2"
+                >
+                  Cancelar
+                </Button>
               </div>
             </>
           )}
-          <div className="flex justify-end mt-6">
-            <Button
-              onClick={handleDeleteUser}
-              className="bg-red-600 text-white hover:bg-red-500"
-            >
-              Deletar
-            </Button>
-            <Button
-              onClick={() => setIsDeleteDialogOpen(false)}
-              className="ml-2"
-            >
-              Cancelar
-            </Button>
-          </div>
         </DialogContent>
       </Dialog>
     </>

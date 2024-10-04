@@ -1,5 +1,13 @@
 import { api } from "@/api/api";
 import { useState, useEffect } from "react";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 interface GeresData {
   geres: number;
@@ -10,7 +18,7 @@ interface GeresData {
 export function Dashboard() {
   const [geresData, setGeresData] = useState<GeresData[]>([]);
 
-  const totalGerencias = Array.from({ length: 12 }, (_, i) => i + 1); // Cria um array de 1 a 12
+  const totalGerencias = Array.from({ length: 12 }, (_, i) => i + 1);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -39,10 +47,10 @@ export function Dashboard() {
       lastReplyDate.getFullYear() === currentDate.getFullYear() &&
       lastReplyDate.getMonth() === currentDate.getMonth() - 1
     ) {
-      return "bg-red-100"; 
+      return "bg-red-100"; // Inativo
     }
 
-    return "bg-gray-100"; 
+    return "bg-gray-100"; // Não disponível
   };
 
   const handleSendAlert = async (geres: number) => {
@@ -56,8 +64,8 @@ export function Dashboard() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center py-6 rounded bg-white ">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3  max-w-5xl">
+    <Card className="shadow-md rounded-lg p-4 mb-6 h-full">
+      <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 h-full">
         {totalGerencias.map((geres) => {
           const geresInfo = geresData.find((data) => data.geres === geres);
           const lastReply = geresInfo ? geresInfo.lastReply : null;
@@ -65,24 +73,33 @@ export function Dashboard() {
           const cardClass = getCardClassName(lastReply || "");
 
           return (
-            <div key={geres} className={`p-4 rounded-lg shadow-md transition-transform transform ${cardClass}`}>
-              <h2 className="text-xl font-semibold text-gray-800">GERES {geres}</h2>
-              <p className="text-md text-gray-600">
-                Última Data de Envio: {lastReply ? new Date(lastReply).toLocaleString() : "Não disponível"}
-              </p>
-              <p className="text-sm text-gray-500">Usuário: {fullName}</p>
-              {cardClass === "bg-red-100" && (
-                <button
-                  onClick={() => handleSendAlert(geres)}
-                  className="mt-2 bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition duration-200"
-                >
-                  Enviar Alerta
-                </button>
-              )}
+            <div key={geres} className="flex h-full">
+              <Card className={`box-border flex-1 shadow-md ${cardClass}`}>
+                <CardHeader className="p-2">
+                  <CardTitle className="text-md font-semibold text-gray-800">
+                    GERES {geres}
+                  </CardTitle>
+                  <CardDescription className="text-sm text-gray-600">
+                    Última Data de Envio:{" "}
+                    {lastReply
+                      ? new Date(lastReply).toLocaleString()
+                      : "Não disponível"}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="p-2 h-3/6 flex flex-col justify-end">
+                  <p className="text-xs text-gray-500">Usuário: {fullName}</p>
+                  <Button
+                    onClick={() => handleSendAlert(geres)}
+                    className="mt-2 bg-blue-600 text-white px-3 py-1 rounded-lg shadow hover:bg-blue-700 transition duration-200"
+                  >
+                    Enviar Alerta
+                  </Button>
+                </CardContent>
+              </Card>
             </div>
           );
         })}
       </div>
-    </div>
+    </Card>
   );
 }
