@@ -10,12 +10,19 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
+import { api } from "@/api/api";
 
 const Header = () => {
   const { user, signOut } = useAuth();
   const [showUserName, setShowUserName] = useState(false);
   const [displayedName, setDisplayedName] = useState("");
   const fullName = user?.fullName || "";
+
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   useEffect(() => {
     let currentIndex = 0;
@@ -35,6 +42,34 @@ const Header = () => {
       setDisplayedName("");
     }
   }, [showUserName, fullName]);
+
+  const handleChangePassword = async (e) => {
+    e.preventDefault();
+
+    if (newPassword !== confirmPassword) {
+      setErrorMessage("As senhas não coincidem.");
+      return;
+    }
+
+    try {
+      const response = await api.put("/modify_password", {
+        email: user?.email,
+        currentPassword,
+        newPassword,
+      });
+      console.log(response);
+
+      setSuccessMessage("Senha atualizada com sucesso!");
+      setErrorMessage("");
+
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+    } catch (error) {
+      setErrorMessage("Erro ao atualizar a senha. Tente novamente.");
+      console.error("Erro ao atualizar a senha:", error);
+    }
+  };
 
   return (
     <header className="flex justify-between w-full items-center p-8 bg-white text-blue-400 shadow-lg mb-10 rounded-b-lg">
@@ -78,13 +113,74 @@ const Header = () => {
                 <span className="text-gray-800">{user?.geres}</span>
               </div>
             </div>
+            <hr className="my-4" />
+            <form onSubmit={handleChangePassword} className="space-y-4">
+              <div className="flex flex-col">
+                <label
+                  htmlFor="currentPassword"
+                  className="font-semibold text-gray-700"
+                >
+                  Senha Atual:
+                </label>
+                <input
+                  type="password"
+                  id="currentPassword"
+                  value={currentPassword}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
+                  className="border border-gray-300 rounded p-2"
+                  required
+                />
+              </div>
+              <div className="flex flex-col">
+                <label
+                  htmlFor="newPassword"
+                  className="font-semibold text-gray-700"
+                >
+                  Nova Senha:
+                </label>
+                <input
+                  type="password"
+                  id="newPassword"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  className="border border-gray-300 rounded p-2"
+                  required
+                />
+              </div>
+              <div className="flex flex-col">
+                <label
+                  htmlFor="confirmPassword"
+                  className="font-semibold text-gray-700"
+                >
+                  Confirme a Nova Senha:
+                </label>
+                <input
+                  type="password"
+                  id="confirmPassword"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className="border border-gray-300 rounded p-2"
+                  required
+                />
+              </div>
+              {errorMessage && (
+                <div className="text-red-500">{errorMessage}</div>
+              )}
+              {successMessage && (
+                <div className="text-green-500">{successMessage}</div>
+              )}
+              <Button
+                type="submit"
+                className="mt-4 bg-blue-600 hover:bg-blue-700"
+              >
+                Atualizar Senha
+              </Button>
+            </form>
           </DialogContent>
         </Dialog>
         {showUserName && (
           <div className="absolute left-10 top-1/2 transform -translate-y-1/2 p-2 whitespace-nowrap">
-            <span className="text-blue-400  font-semibold">
-              {displayedName}
-            </span>
+            <span className="text-blue-400 font-semibold">{displayedName}</span>
           </div>
         )}
       </div>

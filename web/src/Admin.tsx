@@ -42,7 +42,6 @@ export function Admin() {
 
   const handleLogout = () => {
     signOut();
-    window.location.reload();
   };
 
   const renderTabButton = (tab: ActiveTab, label: string) => (

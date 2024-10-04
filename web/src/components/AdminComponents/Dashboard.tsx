@@ -92,6 +92,7 @@ export function Dashboard() {
                   <Button
                     onClick={() => handleSendAlert(geres)}
                     className="mt-2 bg-blue-600 text-white px-3 py-1 rounded-lg shadow hover:bg-blue-700 transition duration-200"
+                    disabled={cardClass !== "bg-red-100"}
                   >
                     Enviar Alerta
                   </Button>

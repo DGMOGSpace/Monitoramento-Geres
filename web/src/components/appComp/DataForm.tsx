@@ -47,7 +47,6 @@ const DataForm = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [valuesList, setValuesList] = useState<IndicatorValue[]>([]);
 
-  // Usando react-hook-form com Zod para validação
   const form = useForm({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -56,7 +55,6 @@ const DataForm = () => {
     },
   });
 
-  // Função para manipular a mudança de valor dos indicadores
   const handleValueChange = (
     index: number,
     field: keyof IndicatorValue,
@@ -67,7 +65,6 @@ const DataForm = () => {
     setValuesList(newValuesList);
   };
 
-  // Verificar se todos os campos (datas e indicadores) estão preenchidos
   const allFieldsFilled =
     form.getValues().startDate &&
     form.getValues().endDate &&
@@ -101,7 +98,7 @@ const DataForm = () => {
           {/* Accordion para os indicadores */}
           <Accordion type="multiple">
             {Object.entries(dados.temasIndicadores).map(
-              ([tema, indicadores], temaIndex) => (
+              ([tema, indicadores]) => (
                 <AccordionItem key={tema} value={tema}>
                   <AccordionTrigger
                     className={`relative flex justify-between items-center p-4 rounded-lg transition-colors ${
@@ -133,7 +130,7 @@ const DataForm = () => {
                     </span>
                   </AccordionTrigger>
                   <AccordionContent className="p-4">
-                    {indicadores.map((indicador, indicadorIndex) => (
+                    {indicadores.map((indicador) => (
                       <div key={indicador} className="mb-4">
                         <FormLabel className="text-gray-700 font-medium">
                           {indicador}
@@ -171,7 +168,6 @@ const DataForm = () => {
             )}
           </Accordion>
 
-          {/* Campo de data de início */}
           <FormField
             control={form.control}
             name="startDate"
@@ -194,7 +190,6 @@ const DataForm = () => {
             )}
           />
 
-          {/* Campo de data de término */}
           <FormField
             control={form.control}
             name="endDate"
@@ -217,7 +212,6 @@ const DataForm = () => {
             )}
           />
 
-          {/* Botão para abrir o modal de confirmação */}
           <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
             <DialogTrigger asChild>
               <Button
@@ -235,7 +229,7 @@ const DataForm = () => {
                 Enviar
               </Button>
             </DialogTrigger>
-            <DialogContent className="min-w-max">
+            <DialogContent className="min-w-max h-5/6">
               <DialogHeader>
                 <DialogTitle className="text-xl font-bold">
                   Confirmar Envio
@@ -245,22 +239,16 @@ const DataForm = () => {
                 </DialogDescription>
               </DialogHeader>
               <div className="space-y-4">
-                <p>
-                  <strong>Data de Início:</strong> {form.getValues().startDate}
-                </p>
-                <p>
-                  <strong>Data de Término:</strong> {form.getValues().endDate}
-                </p>
-                <div>
-                  <strong>Valores:</strong>
-                  <ul className="list-disc pl-5">
-                    {valuesList.map((item, index) => (
-                      <li key={index} className="text-gray-800">
-                        <strong>{item.indicador}:</strong> {item.valor}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                <span className="font-semibold">PERÍODO DOS DADOS:</span>{" "}
+                {form.getValues().startDate} e {form.getValues().endDate}
+                <ul className="list-disc pl-5 max-h-60 overflow-y-scroll">
+                  {valuesList.map((item, index) => (
+                    <li key={index} className="my-2 text-gray-800">
+                      <span className="font-semibold">{item.indicador}:</span>{" "}
+                      {item.valor}
+                    </li>
+                  ))}
+                </ul>
               </div>
               <DialogFooter>
                 <Button

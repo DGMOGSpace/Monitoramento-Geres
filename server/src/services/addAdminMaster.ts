@@ -11,7 +11,6 @@ async function createAdminUser() {
         fullName: "Admin Master",
         password: process.env["ADMIN_PASS"] || "dgmopassword",
         email: "dgmog.ses@gmail.com",
-        modifyPassword: true,
         geres: 1,
         cargo: "Admin",
         setor: "Admin",

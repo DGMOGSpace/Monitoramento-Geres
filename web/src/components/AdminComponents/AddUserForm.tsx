@@ -42,7 +42,6 @@ export function AddUserForm() {
 
     try {
       const response = await api.post("/users", newUser);
-      console.log(response);
 
       setSuccessMessage(
         `Usuário ${newUser.fullName} foi adicionado com sucesso!`
@@ -55,10 +54,10 @@ export function AddUserForm() {
         cargo: "",
         setor: "",
       });
-    } catch (error: unknown) { // Especificando que o erro é do tipo desconhecido
+    } catch (error: unknown) { 
       console.error("Erro ao adicionar usuário:", error);
-      if (error instanceof Error) { // Verificando se o erro é uma instância de Error
-        setErrorMessage(error.message); // Mostra a mensagem do erro
+      if (error instanceof Error) {
+        setErrorMessage(error.message);
       } else {
         setErrorMessage("Erro ao adicionar usuário. Tente novamente.");
       }
