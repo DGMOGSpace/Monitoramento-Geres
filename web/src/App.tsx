@@ -11,7 +11,7 @@ import PrivacyTermsModal from "./components/appComp/PrivacyTermsModal";
 import { Admin } from "./Admin";
 
 const App = () => {
-  const { signed, user } = useAuth(); // Assume que useAuth retorna um campo isAdmin
+  const { signed, user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(!signed);
 

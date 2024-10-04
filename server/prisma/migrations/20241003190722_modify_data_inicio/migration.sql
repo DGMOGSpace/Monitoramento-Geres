@@ -3,6 +3,8 @@ CREATE TABLE "User" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "fullName" TEXT NOT NULL,
     "password" TEXT NOT NULL,
+    "active" BOOLEAN NOT NULL DEFAULT true,
+    "modifyPassword" BOOLEAN NOT NULL DEFAULT false,
     "geres" INTEGER NOT NULL,
     "setor" TEXT NOT NULL,
     "cargo" TEXT NOT NULL,
@@ -41,7 +43,8 @@ CREATE TABLE "DataForm" (
     "integracao_grupos_condutores_rede_pri" REAL,
     "participacao_gestores_reunioes_camara_tecnica_ct_cir" REAL,
     "participacao_gestores_reunioes_cir" REAL,
-    "dataRef" TEXT NOT NULL,
+    "dataInicio" TEXT NOT NULL,
+    "dataFinal" TEXT NOT NULL,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT "DataForm_idUser_fkey" FOREIGN KEY ("idUser") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );

@@ -5,4 +5,5 @@ export default interface UserInterface {
   email: string;
   admin: string;
   token: string;
+  modifyPassword: boolean;
 }

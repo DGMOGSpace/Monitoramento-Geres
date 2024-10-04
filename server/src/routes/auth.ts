@@ -4,6 +4,48 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export default async function authRoutes(fastify: FastifyInstance) {
+  fastify.post("/checkEmail", async (request, reply) => {
+    const { email } = request.body as {
+      email: string;
+    };
+
+    const user = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (user?.email) {
+      reply
+        .status(200)
+        .send({ email: user.email, modify: user.modifyPassword });
+    } else {
+      reply.status(404).send(false);
+    }
+  });
+
+  fastify.put("/modifyPassword", async (request, reply) => {
+    const { email, password } = request.body as {
+      email: string;
+      password: string;
+    };
+
+    try {
+      await prisma.user.update({
+        where: { email },
+        data: {
+          password,
+          active: true,
+        },
+      });
+      reply
+        .status(200)
+        .send({ success: true, message: "Senha cadastrada com sucesso." });
+    } catch (error) {
+      reply
+        .status(500)
+        .send({ success: false, message: "Erro ao cadastrar a senha." });
+    }
+  });
+
   fastify.post("/login", async (request, reply) => {
     const { email, password } = request.body as {
       email: string;
@@ -11,7 +53,7 @@ export default async function authRoutes(fastify: FastifyInstance) {
     };
 
     const user = await prisma.user.findUnique({
-      where: { email, password },
+      where: { email, password, active: true },
     });
 
     if (!user) {
@@ -31,6 +73,7 @@ export default async function authRoutes(fastify: FastifyInstance) {
       geres: user.geres,
       admin: user.admin,
       email: user.email,
+      modify: user.modifyPassword,
     };
 
     return {

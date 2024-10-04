@@ -8,18 +8,19 @@ datasource db {
 }
 
 model User {
-  id        Int        @id @default(autoincrement())
-  fullName  String
-  password  String
-  geres     Int
-  setor     String
-  cargo     String
-  admin     Boolean
-  email     String     @unique
-  createdAt DateTime   @default(now())
-  logs      Log[]
-  dataForms DataForm[]
-  active    Boolean    @default(true)
+  id             Int        @id @default(autoincrement())
+  fullName       String
+  password       String
+  active         Boolean    @default(true)
+  modifyPassword Boolean    @default(false)
+  geres          Int
+  setor          String
+  cargo          String
+  admin          Boolean
+  email          String     @unique
+  createdAt      DateTime   @default(now())
+  logs           Log[]
+  dataForms      DataForm[]
 }
 
 model Log {
@@ -51,7 +52,8 @@ model DataForm {
   integracao_grupos_condutores_rede_pri                           Float?
   participacao_gestores_reunioes_camara_tecnica_ct_cir            Float?
   participacao_gestores_reunioes_cir                              Float?
-  dataRef                                                         String
+  dataInicio                                                      String
+  dataFinal                                                       String
   createdAt                                                       DateTime @default(now())
   logs                                                            Log[]
 }
