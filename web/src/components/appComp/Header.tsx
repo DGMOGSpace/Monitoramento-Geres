@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, FormEvent } from "react";
 import { useAuth } from "../../hooks/auth/useAuth";
 import { Button } from "../ui/button";
 import { FaUserCircle } from "react-icons/fa";
@@ -12,38 +12,16 @@ import {
 } from "@/components/ui/dialog";
 import { api } from "@/api/api";
 
-const Header = () => {
+const Header: React.FC = () => {
   const { user, signOut } = useAuth();
-  const [showUserName, setShowUserName] = useState(false);
-  const [displayedName, setDisplayedName] = useState("");
-  const fullName = user?.fullName || "";
 
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
+  const [currentPassword, setCurrentPassword] = useState<string>("");
+  const [newPassword, setNewPassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
+  const [errorMessage, setErrorMessage] = useState<string>("");
+  const [successMessage, setSuccessMessage] = useState<string>("");
 
-  useEffect(() => {
-    let currentIndex = 0;
-
-    if (showUserName) {
-      const intervalId = setInterval(() => {
-        if (currentIndex < fullName.length) {
-          setDisplayedName((prev) => prev + fullName[currentIndex]);
-          currentIndex++;
-        } else {
-          clearInterval(intervalId);
-        }
-      }, 50);
-
-      return () => clearInterval(intervalId);
-    } else {
-      setDisplayedName("");
-    }
-  }, [showUserName, fullName]);
-
-  const handleChangePassword = async (e) => {
+  const handleChangePassword = async (e: FormEvent) => {
     e.preventDefault();
 
     if (newPassword !== confirmPassword) {
@@ -76,13 +54,12 @@ const Header = () => {
       <div className="relative">
         <Dialog>
           <DialogTrigger asChild>
-            <Button
-              className="flex items-center justify-center bg-transparent hover:bg-transparent shadow-none transition duration-200 ease-in-out  p-2"
-              onMouseEnter={() => setShowUserName(true)}
-              onMouseLeave={() => setShowUserName(false)}
-            >
-              <FaUserCircle size={30} className="text-blue-400" />
-            </Button>
+            <div className="flex items-center">
+              <Button className="flex items-center justify-center bg-transparent hover:bg-transparent shadow-none transition duration-200 ease-in-out  p-2">
+                <FaUserCircle size={30} className="text-blue-400" />
+              </Button>
+              <p className="text-blue-400 font-semibold">Meu perfil</p>
+            </div>
           </DialogTrigger>
           <DialogContent className="min-w-max p-6 rounded-lg shadow-lg bg-white border border-gray-200">
             <DialogHeader>
@@ -178,11 +155,6 @@ const Header = () => {
             </form>
           </DialogContent>
         </Dialog>
-        {showUserName && (
-          <div className="absolute left-10 top-1/2 transform -translate-y-1/2 p-2 whitespace-nowrap">
-            <span className="text-blue-400 font-semibold">{displayedName}</span>
-          </div>
-        )}
       </div>
       <Button
         onClick={signOut}

@@ -31,7 +31,6 @@ import {
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-// Esquema de validação usando Zod
 const FormSchema = z.object({
   startDate: z.string().nonempty("Data de início é obrigatória."),
   endDate: z.string().nonempty("Data de término é obrigatória."),
@@ -73,9 +72,8 @@ const DataForm = () => {
         (acc, key) => acc + dados.temasIndicadores[key].length,
         0
       ) &&
-    valuesList.every((val) => val.valor); // Verifica se todos os valores dos indicadores foram preenchidos
+    valuesList.every((val) => val.valor);
 
-  // Submissão do formulário
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     const payload = {
       ...data,
@@ -95,7 +93,6 @@ const DataForm = () => {
       </h2>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          {/* Accordion para os indicadores */}
           <Accordion type="multiple">
             {Object.entries(dados.temasIndicadores).map(
               ([tema, indicadores]) => (
@@ -229,7 +226,7 @@ const DataForm = () => {
                 Enviar
               </Button>
             </DialogTrigger>
-            <DialogContent className="min-w-max h-5/6">
+            <DialogContent className="min-w-max">
               <DialogHeader>
                 <DialogTitle className="text-xl font-bold">
                   Confirmar Envio

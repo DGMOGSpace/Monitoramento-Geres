@@ -41,7 +41,7 @@ export function AddUserForm() {
     setLoading(true); // Inicia o carregamento
 
     try {
-      const response = await api.post("/users", newUser);
+      await api.post("/users", newUser);
 
       setSuccessMessage(
         `Usuário ${newUser.fullName} foi adicionado com sucesso!`
@@ -54,7 +54,7 @@ export function AddUserForm() {
         cargo: "",
         setor: "",
       });
-    } catch (error: unknown) { 
+    } catch (error: unknown) {
       console.error("Erro ao adicionar usuário:", error);
       if (error instanceof Error) {
         setErrorMessage(error.message);
@@ -62,7 +62,7 @@ export function AddUserForm() {
         setErrorMessage("Erro ao adicionar usuário. Tente novamente.");
       }
     } finally {
-      setLoading(false); // Finaliza o carregamento
+      setLoading(false);
     }
   };
 
