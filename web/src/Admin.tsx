@@ -21,7 +21,7 @@ export function Admin() {
   const handleDownload = async () => {
     try {
       const response = await api.get("/download_excel", {
-        responseType: "blob", // Define o tipo de resposta como blob
+        responseType: "blob",
       });
 
       if (response.status !== 200) {
@@ -31,7 +31,7 @@ export function Admin() {
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const a = document.createElement("a");
       a.href = url;
-      a.download = "logs.xlsx"; // Nome do arquivo baixado
+      a.download = "logs.xlsx";
       document.body.appendChild(a);
       a.click();
       a.remove();

@@ -68,10 +68,11 @@ const DataForm = () => {
     form.getValues().startDate &&
     form.getValues().endDate &&
     valuesList.length ===
-      Object.keys(dados.temasIndicadores).reduce(
-        (acc, key) => acc + dados.temasIndicadores[key].length,
-        0
-      ) &&
+      (
+        Object.keys(dados.temasIndicadores) as Array<
+          keyof typeof dados.temasIndicadores
+        >
+      ).reduce((acc, key) => acc + dados.temasIndicadores[key].length, 0) &&
     valuesList.every((val) => val.valor);
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
