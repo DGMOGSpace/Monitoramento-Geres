@@ -38,7 +38,7 @@ export function AddUserForm() {
     e.preventDefault();
     setErrorMessage(null);
     setSuccessMessage(null);
-    setLoading(true); // Inicia o carregamento
+    setLoading(true);
 
     try {
       await api.post("/users", newUser);
