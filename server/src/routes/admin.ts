@@ -411,4 +411,8 @@ export default async function adminRoutes(fastify: FastifyInstance) {
       reply.status(500).send("Error generating Excel file");
     }
   });
+
+  fastify.get("/health", (request, reply) => {
+    reply.status(200).send("OK");
+  });
 }

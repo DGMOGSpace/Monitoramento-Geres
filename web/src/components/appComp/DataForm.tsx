@@ -73,7 +73,7 @@ const DataForm = () => {
     form.getValues().endDate &&
     valuesList.length ===
       Object.keys(dados.temasIndicadores).reduce(
-        (acc, key) => acc + dados.temasIndicadores[key].length,
+        (acc, key) => acc + (dados.temasIndicadores as Record<string, string[]>)[key].length,
         0
       ) &&
     valuesList.every((val) => val.valor); // Verifica se todos os valores dos indicadores foram preenchidos
@@ -101,7 +101,7 @@ const DataForm = () => {
           {/* Accordion para os indicadores */}
           <Accordion type="multiple">
             {Object.entries(dados.temasIndicadores).map(
-              ([tema, indicadores], temaIndex) => (
+              ([tema, indicadores]) => (
                 <AccordionItem key={tema} value={tema}>
                   <AccordionTrigger
                     className={`relative flex justify-between items-center p-4 rounded-lg transition-colors ${
@@ -133,7 +133,7 @@ const DataForm = () => {
                     </span>
                   </AccordionTrigger>
                   <AccordionContent className="p-4">
-                    {indicadores.map((indicador, indicadorIndex) => (
+                    {indicadores.map((indicador) => (
                       <div key={indicador} className="mb-4">
                         <FormLabel className="text-gray-700 font-medium">
                           {indicador}
