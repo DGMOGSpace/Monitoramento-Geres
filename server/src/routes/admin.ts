@@ -10,9 +10,9 @@ require("dotenv").config();
 const prisma = new PrismaClient();
 
 interface GeresData {
-  geres: number; // Ajuste o tipo conforme sua definição no banco
+  geres: number; 
   fullName: string;
-  lastReply: Date; // Use Date para representar datas
+  lastReply: Date; 
 }
 
 export default async function adminRoutes(fastify: FastifyInstance) {
@@ -27,7 +27,6 @@ export default async function adminRoutes(fastify: FastifyInstance) {
     };
 
     try {
-      // Verifica se o usuário já existe com o email fornecido
       const existingUser = await prisma.user.findUnique({
         where: { email },
       });
@@ -60,7 +59,7 @@ export default async function adminRoutes(fastify: FastifyInstance) {
         },
       });
 
-      await sendEmail(email, password); // Aguarda o envio do email
+      await sendEmail(email, password); 
 
       return reply.status(201).send(user);
     } catch (error) {
@@ -120,7 +119,7 @@ export default async function adminRoutes(fastify: FastifyInstance) {
         where: { id },
         data: { active: false },
       });
-      return reply.status(204).send(); // No Content
+      return reply.status(204).send(); 
     } catch (error) {
       console.error("Erro ao deletar usuário:", error);
       return reply.status(500).send({ message: "Erro ao deletar usuário" });
@@ -351,7 +350,6 @@ export default async function adminRoutes(fastify: FastifyInstance) {
         { header: "Data de Criação", key: "createdAt", width: 20 },
       ];
 
-      // Preenche a planilha com os dados
       data.forEach((log) => {
         worksheet.addRow({
           logId: log.id,
@@ -396,14 +394,12 @@ export default async function adminRoutes(fastify: FastifyInstance) {
         });
       });
 
-      // Define o tipo de resposta para Excel
       reply.header(
         "Content-Type",
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
       );
       reply.header("Content-Disposition", "attachment; filename=logs.xlsx");
 
-      // Gera o arquivo Excel e envia na resposta
       const buffer = await workbook.xlsx.writeBuffer();
       reply.send(buffer);
     } catch (error) {

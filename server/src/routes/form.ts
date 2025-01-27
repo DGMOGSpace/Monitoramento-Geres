@@ -4,36 +4,66 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 const indicatorsMap: { [key: string]: string } = {
-  "% DE EXECUÇÃO DO ORÇAMENTO POR REGIONAL":
-    "execucao_do_orcamento_por_regional",
-  "TAXA DE SATISFAÇÃO DOS MUNICÍPIOS EM RELAÇÃO AO APOIO DAS GERES":
-    "taxa_de_satisfacao_municipios_apoio_geres",
-  "% DE RESOLUÇÃO DAS AÇÕES DE COMPETÊNCIAS DA GERES":
-    "resolucao_acoes_competencias_geres",
-  "% DE MUNICÍPIOS VISITADOS": "municipios_visitados",
-  "% DE APROVEITAMENTO DAS COTAS DE EXAME DE IMAGEM (TOMOGRAFIA E RM)":
-    "aproveitamento_cotas_exame_imagem",
-  "TAXA DE PERDA PRIMÁRIA UPAE": "taxa_perda_primaria_upae",
-  "TAXA DE ABSENTEÍSMO": "taxa_absenteismo",
-  "% DE CUMPRIMENTO DO PES POR QUADRIMESTRE": "cumprimento_pes_quadrimestre",
-  "% DE CUMPRIMENTO DO PES NO EXERCÍCIO": "cumprimento_pes_exercicio",
-  "ÍNDICE DE QUALIFICAÇÃO DAS AÇÕES DE VIGILÂNCIA":
-    "indice_qualificacao_acoes_vigilancia",
-  "% DE APROVEITAMENTO DAS COTAS DE CONSULTAS ESPECIALIZADAS":
-    "aproveitamento_cotas_consultas_especializadas",
-  "% DOS MUNICÍPIOS COM OS INSTRUMENTOS DE GESTÃO DO SUS ATUALIZADOS":
-    "municipios_instrumentos_gestao_sus_atualizados",
-  "% DE IMPLEMENTAÇÃO DO PLANEJAMENTO ESTRATÉGICO":
-    "implementacao_planejamento_estrategico",
-  "% ENGAJAMENTO DOS GESTORES NAS REUNIÕES DOS GRUPOS CONDUTORES MACRORREGIONAIS":
-    "engajamento_gestores_reunioes_grupos_condutores_macrorregionais",
-  "% DE INTEGRAÇÃO ENTRE GRUPOS CONDUTORES DE REDE E O PRI":
-    "integracao_grupos_condutores_rede_pri",
-  "% PARTICIPAÇÃO DOS GESTORES NAS REUNIÕES DE CÂMARA TÉCNICA/CT CIR":
-    "participacao_gestores_reunioes_camara_tecnica_ct_cir",
-  "% PARTICIPAÇÃO DOS GESTORES NAS REUNIÕES DE CIR":
-    "participacao_gestores_reunioes_cir",
+  "% de áreas técnicas com salas de situação instituídas":
+  "percentualAreasTecnicasComSalasDeSituacaoInstituidas",
+  "% das ações de regionalização desenvolvidas pela GERES no território":
+  "percentualAcoesRegionalizacaoDesenvolvidasPelaGERES",
+  "% de vinculação da gestante ao serviço de referência ao parto":
+  "percentualVinculacaoGestanteAoServicoReferencia",
+  "% de óbitos infantis e fetais investigados em tempo oportuno":
+  "percentualObitosInvestigadosEmTempoOportuno",
+  "número de municípios que atingiram a cobertura vacinal em menores de 2 anos":
+  "numeroMunicipiosCoberturaVacinalMenores2Anos",
+  "% de internação por causas sensíveis à APS":
+  "percentualInternacaoPorCausasSensiveisAPS",
+  "% de perda primária de cotas de consultas e exames":
+  "percentualPerdaPrimariaCotasConsultasExames",
+  "% de absenteísmo de consultas e exames":
+  "percentualAbsenteismoConsultasExames",
+  "Taxa de mortalidade materna":
+  "taxaMortalidadeMaterna",
+  "Taxa de mortalidade infantil":
+  "taxaMortalidadeInfantil",
+  "% de gestantes de alto risco acompanhadas adequadamente":
+  "percentualGestantesAltoRiscoAcompanhadas",
+  "% de pacientes com retorno garantido no serviço das UPAEs":
+  "percentualPacientesRetornoGarantidoUPAEs",
+  "% de municípios que enviaram dados para a RNDS":
+  "percentualMunicipiosEnviaramDadosRNDS",
+  "% de cumprimento do PES no exercício":
+  "percentualCumprimentoPESNoExercicio",
+  "taxa de satisfação dos municípios em relação ao apoio das GERES":
+  "taxaSatisfacaoMunicipiosApoioGERES",
+  "% de resolução das ações de competências da GERES no Programa GERES PERCORRE":
+  "percentualResolucaoAcoesCompetenciasGERES",
+  "Taxa de mortalidade por causas evitáveis":
+  "taxaMortalidadePorCausasEvitaeis",
+  "Proporção de nascidos vivos de mães com 7 ou mais consultas de pré-natal":
+  "proporcaoNascidosVivosMae7OuMaisConsultasPreNatal",
+  "taxa de mortalidade por acidentes de transporte terrestre":
+  "taxaMortalidadeAcidentesTransporteTerrestre",
+  "% de redução de fila de consultas":
+  "percentualReducaoFilaConsultas",
+  "% de aproveitamento das cotas de exame de imagem (tomografia e RM)":
+  "percentualAproveitamentoCotasExamesImagem",
+  "% de investigação epidemiológica dos óbitos por acidente de trabalho":
+  "percentualInvestigacaoEpidemiologicaObitosAcidenteTrabalho",
+  "% de redução de fila de exames de imagem":
+  "percentualReducaoFilaExamesImagem",
+  "% de mortalidade não hospitalar por DCNT":
+  "percentualMortalidadeNaoHospitalarDCNT",
+  "% de mortalidade não hospitalar na infância":
+  "percentualMortalidadeNaoHospitalarInfancia",
+  "% de mortalidade não hospitalar materna":
+  "percentualMortalidadeNaoHospitalarMaterna",
+  "% de cobertura vacinal por regional":
+  "percentualCoberturaVacinalPorRegional",
+  "% de mortes à esclarecer por regional":
+  "percentualMortesAEsclarecerPorRegional",
+  "% de fila de espera por regional":
+  "percentualFilaEsperaPorRegional"
 };
+
 
 export function ConvertFormLabel(
   textToConvert: string,
@@ -62,7 +92,7 @@ export default async function formRoutes(fastify: FastifyInstance) {
 
     const parseValue = (valor: string | number) => {
       const floatValue = parseFloat(valor.toString());
-      return isNaN(floatValue) ? null : floatValue; // Retorna null se o valor for inválido
+      return isNaN(floatValue) ? null : floatValue;
     };
 
     try {
