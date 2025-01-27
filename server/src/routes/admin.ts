@@ -253,102 +253,42 @@ export default async function adminRoutes(fastify: FastifyInstance) {
         { header: "Email do Usuário", key: "userEmail", width: 30 },
         { header: "Cargo do Usuário", key: "userCargo", width: 20 },
         { header: "Geres do Usuário", key: "geres", width: 20 },
-        {
-          header: "Execução do Orçamento por Regional",
-          key: "execucao_do_orcamento_por_regional",
-          width: 20,
-        },
-        {
-          header: "Taxa de Satisfação do Municipio de Apoio das Geres",
-          key: "taxa_de_satisfacao_municipios_apoio_geres",
-          width: 20,
-        },
-        {
-          header: "Taxa de Satisfação",
-          key: "taxa_de_satisfacao_municipios_apoio_geres",
-          width: 20,
-        },
-        {
-          header: "Resolução Ações Competências GERES",
-          key: "resolucao_acoes_competencias_geres",
-          width: 20,
-        },
-        {
-          header: "Municípios Visitados",
-          key: "municipios_visitados",
-          width: 20,
-        },
-        {
-          header: "Aproveitamento Cotas Exame Imagem",
-          key: "aproveitamento_cotas_exame_imagem",
-          width: 20,
-        },
-        {
-          header: "Taxa de Perda Primária UPAE",
-          key: "taxa_perda_primaria_upae",
-          width: 20,
-        },
-        {
-          header: "Taxa de Absentismo",
-          key: "taxa_absenteismo",
-          width: 20,
-        },
-        {
-          header: "Cumprimento PES Quadrimestre",
-          key: "cumprimento_pes_quadrimestre",
-          width: 20,
-        },
-        {
-          header: "Cumprimento PES Exercício",
-          key: "cumprimento_pes_exercicio",
-          width: 20,
-        },
-        {
-          header: "Índice Qualificação Ações Vigilância",
-          key: "indice_qualificacao_acoes_vigilancia",
-          width: 20,
-        },
-        {
-          header: "Aproveitamento Cotas Consultas Especializadas",
-          key: "aproveitamento_cotas_consultas_especializadas",
-          width: 20,
-        },
-        {
-          header: "Municípios Instrumentos Gestão SUS Atualizados",
-          key: "municipios_instrumentos_gestao_sus_atualizados",
-          width: 20,
-        },
-        {
-          header: "Implementação Planejamento Estratégico",
-          key: "implementacao_planejamento_estrategico",
-          width: 20,
-        },
-        {
-          header:
-            "Engajamento Gestores Reuniões Grupos Condutores Macrorregionais",
-          key: "engajamento_gestores_reunioes_grupos_condutores_macrorregionais",
-          width: 20,
-        },
-        {
-          header: "Integração Grupos Condutores Rede PRI",
-          key: "integracao_grupos_condutores_rede_pri",
-          width: 20,
-        },
-        {
-          header: "Participação Gestores Reuniões Câmara Técnica CT CIR",
-          key: "participacao_gestores_reunioes_camara_tecnica_ct_cir",
-          width: 20,
-        },
-        {
-          header: "Participação Gestores Reuniões CIR",
-          key: "participacao_gestores_reunioes_cir",
-          width: 20,
-        },
-
+      
+        { header: "% de áreas técnicas com salas de situação instituídas", key: "percentualAreasTecnicasComSalasDeSituacaoInstituidas", width: 20 },
+        { header: "% de ações de regionalização desenvolvidas pela GERES", key: "percentualAcoesRegionalizacaoDesenvolvidasPelaGERES", width: 20 },
+        { header: "% de vinculação da gestante ao serviço de referência ao parto", key: "percentualVinculacaoGestanteAoServicoReferencia", width: 20 },
+        { header: "% de óbitos infantis e fetais investigados em tempo oportuno", key: "percentualObitosInvestigadosEmTempoOportuno", width: 20 },
+        { header: "Número de municípios com cobertura vacinal em menores de 2 anos", key: "numeroMunicipiosCoberturaVacinalMenores2Anos", width: 20 },
+        { header: "% de internação por causas sensíveis à APS", key: "percentualInternacaoPorCausasSensiveisAPS", width: 20 },
+        { header: "% de perda primária de cotas de consultas e exames", key: "percentualPerdaPrimariaCotasConsultasExames", width: 20 },
+        { header: "% de absenteísmo de consultas e exames", key: "percentualAbsenteismoConsultasExames", width: 20 },
+        { header: "Taxa de mortalidade materna", key: "taxaMortalidadeMaterna", width: 20 },
+        { header: "Taxa de mortalidade infantil", key: "taxaMortalidadeInfantil", width: 20 },
+        { header: "% de gestantes de alto risco acompanhadas adequadamente", key: "percentualGestantesAltoRiscoAcompanhadas", width: 20 },
+        { header: "% de pacientes com retorno garantido no serviço das UPAEs", key: "percentualPacientesRetornoGarantidoUPAEs", width: 20 },
+        { header: "% de municípios que enviaram dados para a RNDS", key: "percentualMunicipiosEnviaramDadosRNDS", width: 20 },
+        { header: "% de cumprimento do PES no exercício", key: "percentualCumprimentoPESNoExercicio", width: 20 },
+        { header: "Taxa de satisfação dos municípios em relação ao apoio das GERES", key: "taxaSatisfacaoMunicipiosApoioGERES", width: 20 },
+        { header: "% de resolução das ações de competências da GERES no Programa GERES PERCORRE", key: "percentualResolucaoAcoesCompetenciasGERES", width: 20 },
+        { header: "Taxa de mortalidade por causas evitáveis", key: "taxaMortalidadePorCausasEvitaeis", width: 20 },
+        { header: "Proporção de nascidos vivos de mães com 7 ou mais consultas de pré-natal", key: "proporcaoNascidosVivosMae7OuMaisConsultasPreNatal", width: 20 },
+        { header: "Taxa de mortalidade por acidentes de transporte terrestre", key: "taxaMortalidadeAcidentesTransporteTerrestre", width: 20 },
+        { header: "% de redução de fila de consultas", key: "percentualReducaoFilaConsultas", width: 20 },
+        { header: "% de aproveitamento das cotas de exame de imagem (tomografia e RM)", key: "percentualAproveitamentoCotasExamesImagem", width: 20 },
+        { header: "% de investigação epidemiológica dos óbitos por acidente de trabalho", key: "percentualInvestigacaoEpidemiologicaObitosAcidenteTrabalho", width: 20 },
+        { header: "% de redução de fila de exames de imagem", key: "percentualReducaoFilaExamesImagem", width: 20 },
+        { header: "% de mortalidade não hospitalar por DCNT", key: "percentualMortalidadeNaoHospitalarDCNT", width: 20 },
+        { header: "% de mortalidade não hospitalar na infância", key: "percentualMortalidadeNaoHospitalarInfancia", width: 20 },
+        { header: "% de mortalidade não hospitalar materna", key: "percentualMortalidadeNaoHospitalarMaterna", width: 20 },
+        { header: "% de cobertura vacinal por regional", key: "percentualCoberturaVacinalPorRegional", width: 20 },
+        { header: "% de mortes a esclarecer por regional", key: "percentualMortesAEsclarecerPorRegional", width: 20 },
+        { header: "% de fila de espera por regional", key: "percentualFilaEsperaPorRegional", width: 20 },
+      
         { header: "Data Início", key: "dataInicio", width: 20 },
         { header: "Data Final", key: "dataFinal", width: 20 },
         { header: "Data de Criação", key: "createdAt", width: 20 },
       ];
+      
 
       data.forEach((log) => {
         worksheet.addRow({
@@ -358,36 +298,36 @@ export default async function adminRoutes(fastify: FastifyInstance) {
           userCargo: log.user.cargo,
           geres: log.user.geres,
           formId: log.form.id,
-          execucao_do_orcamento_por_regional:
-            log.form.execucao_do_orcamento_por_regional,
-          taxa_de_satisfacao_municipios_apoio_geres:
-            log.form.taxa_de_satisfacao_municipios_apoio_geres,
-          resolucao_acoes_competencias_geres:
-            log.form.resolucao_acoes_competencias_geres,
-          municipios_visitados: log.form.municipios_visitados,
-          aproveitamento_cotas_exame_imagem:
-            log.form.aproveitamento_cotas_exame_imagem,
-          taxa_perda_primaria_upae: log.form.taxa_perda_primaria_upae,
-          taxa_absenteismo: log.form.taxa_absenteismo,
-          cumprimento_pes_quadrimestre: log.form.cumprimento_pes_quadrimestre,
-          cumprimento_pes_exercicio: log.form.cumprimento_pes_exercicio,
-          indice_qualificacao_acoes_vigilancia:
-            log.form.indice_qualificacao_acoes_vigilancia,
-          aproveitamento_cotas_consultas_especializadas:
-            log.form.aproveitamento_cotas_consultas_especializadas,
-          municipios_instrumentos_gestao_sus_atualizados:
-            log.form.municipios_instrumentos_gestao_sus_atualizados,
-          implementacao_planejamento_estrategico:
-            log.form.implementacao_planejamento_estrategico,
-          engajamento_gestores_reunioes_grupos_condutores_macrorregionais:
-            log.form
-              .engajamento_gestores_reunioes_grupos_condutores_macrorregionais,
-          integracao_grupos_condutores_rede_pri:
-            log.form.integracao_grupos_condutores_rede_pri,
-          participacao_gestores_reunioes_camara_tecnica_ct_cir:
-            log.form.participacao_gestores_reunioes_camara_tecnica_ct_cir,
-          participacao_gestores_reunioes_cir:
-            log.form.participacao_gestores_reunioes_cir,
+        percentualAreasTecnicasComSalasDeSituacaoInstituidas: log.form.percentualAreasTecnicasComSalasDeSituacaoInstituidas,
+  percentualAcoesRegionalizacaoDesenvolvidasPelaGERES: log.form.percentualAcoesRegionalizacaoDesenvolvidasPelaGERES,
+  percentualVinculacaoGestanteAoServicoReferencia: log.form.percentualVinculacaoGestanteAoServicoReferencia,
+  percentualObitosInvestigadosEmTempoOportuno: log.form.percentualObitosInvestigadosEmTempoOportuno,
+  numeroMunicipiosCoberturaVacinalMenores2Anos: log.form.numeroMunicipiosCoberturaVacinalMenores2Anos,
+  percentualInternacaoPorCausasSensiveisAPS: log.form.percentualInternacaoPorCausasSensiveisAPS,
+  percentualPerdaPrimariaCotasConsultasExames: log.form.percentualPerdaPrimariaCotasConsultasExames,
+  percentualAbsenteismoConsultasExames: log.form.percentualAbsenteismoConsultasExames,
+  taxaMortalidadeMaterna: log.form.taxaMortalidadeMaterna,
+  taxaMortalidadeInfantil: log.form.taxaMortalidadeInfantil,
+  percentualGestantesAltoRiscoAcompanhadas: log.form.percentualGestantesAltoRiscoAcompanhadas,
+  percentualPacientesRetornoGarantidoUPAEs: log.form.percentualPacientesRetornoGarantidoUPAEs,
+  percentualMunicipiosEnviaramDadosRNDS: log.form.percentualMunicipiosEnviaramDadosRNDS,
+  percentualCumprimentoPESNoExercicio: log.form.percentualCumprimentoPESNoExercicio,
+  taxaSatisfacaoMunicipiosApoioGERES: log.form.taxaSatisfacaoMunicipiosApoioGERES,
+  percentualResolucaoAcoesCompetenciasGERES: log.form.percentualResolucaoAcoesCompetenciasGERES,
+  taxaMortalidadePorCausasEvitaeis: log.form.taxaMortalidadePorCausasEvitaeis,
+  proporcaoNascidosVivosMae7OuMaisConsultasPreNatal: log.form.proporcaoNascidosVivosMae7OuMaisConsultasPreNatal,
+  taxaMortalidadeAcidentesTransporteTerrestre: log.form.taxaMortalidadeAcidentesTransporteTerrestre,
+  percentualReducaoFilaConsultas: log.form.percentualReducaoFilaConsultas,
+  percentualAproveitamentoCotasExamesImagem: log.form.percentualAproveitamentoCotasExamesImagem,
+  percentualInvestigacaoEpidemiologicaObitosAcidenteTrabalho: log.form.percentualInvestigacaoEpidemiologicaObitosAcidenteTrabalho,
+  percentualReducaoFilaExamesImagem: log.form.percentualReducaoFilaExamesImagem,
+  percentualMortalidadeNaoHospitalarDCNT: log.form.percentualMortalidadeNaoHospitalarDCNT,
+  percentualMortalidadeNaoHospitalarInfancia: log.form.percentualMortalidadeNaoHospitalarInfancia,
+  percentualMortalidadeNaoHospitalarMaterna: log.form.percentualMortalidadeNaoHospitalarMaterna,
+  percentualCoberturaVacinalPorRegional: log.form.percentualCoberturaVacinalPorRegional,
+  percentualMortesAEsclarecerPorRegional: log.form.percentualMortesAEsclarecerPorRegional,
+  percentualFilaEsperaPorRegional: log.form.percentualFilaEsperaPorRegional,
+
           dataInicio: log.form.dataInicio,
           dataFinal: log.form.dataFinal,
           createdAt: log.form.createdAt,
