@@ -5,6 +5,7 @@ import cors from "@fastify/cors";
 import authRoutes from "./routes/auth";
 import formRoutes from "./routes/form";
 import adminRoutes from "./routes/admin";
+import { createAdminUser } from "./services/addAdminMaster";
 
 const app = fastify({ logger: true });
 
@@ -19,6 +20,7 @@ app.register(cors, {
 app.register(authRoutes);
 app.register(formRoutes);
 app.register(adminRoutes);
+createAdminUser();
 
 const start = async () => {
   try {

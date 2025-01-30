@@ -4,7 +4,7 @@ require("dotenv").config();
 
 const prisma = new PrismaClient();
 
-async function createAdminUser() {
+export async function createAdminUser() {
   try {
     const newUser = await prisma.user.create({
       data: {
@@ -26,4 +26,3 @@ async function createAdminUser() {
   }
 }
 
-createAdminUser();

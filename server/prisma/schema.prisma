@@ -36,34 +36,37 @@ model DataForm {
   idUser Int
   user   User   @relation(fields: [idUser], references: [id])
   
-  percentualAreasTecnicasComSalasDeSituacaoInstituidas Float?
-  percentualAcoesRegionalizacaoDesenvolvidasPelaGERES Float?
-  percentualVinculacaoGestanteAoServicoReferencia Float?
-  percentualObitosInvestigadosEmTempoOportuno Float?
-  numeroMunicipiosCoberturaVacinalMenores2Anos Int?
-  percentualInternacaoPorCausasSensiveisAPS Float?
-  percentualPerdaPrimariaCotasConsultasExames Float?
+  percentualAcoesFinanceirasExecutadas Float? 
+  taxaSatisfacaoMunicipiosApoioGeres Float?
+  percentualResolucaoAcoesCompetenciasGeres Float?
+  percentualMunicipiosVisitados Float?
+  numeroMunicipiosCoberturaVacinalMenores2Anos Float?
+  percentualMunicipiosEnviaramDadosRNDS Float?
+  percentualCumprimentoPesExercicio Float?
+  percentualAreasTecnicasComSalasSituacaoInstituidas Float?
+  percentualAcoesRegionalizacaoDesenvolvidasGeres Float?
+  percentualVinculacaoGestanteServicoReferenciaParto Float?
+  percentualObitosInfantisFetaisInvestigados Float?
+  percentualReducaoFilaConsultas Float?
+  percentualReducaoFilaExamesImagem Float?
+  percentualInvestigacaoEpidemiologicaObitosAcidenteTrabalho Float?
+  percentualAproveitamentoCotasExameImagem Float?
+  percentualInternacaoCausasSensiveisAPS Float?
   percentualAbsenteismoConsultasExames Float?
+  percentualPerdaPrimariaCotasConsultasExames Float?
+  percentualPacientesRetornoGarantidoUPAEs Float?
+  percentualGestantesAltoRiscoAcompanhadasAdequadamente Float?
   taxaMortalidadeMaterna Float?
   taxaMortalidadeInfantil Float?
-  percentualGestantesAltoRiscoAcompanhadas Float?
-  percentualPacientesRetornoGarantidoUPAEs Float?
-  percentualMunicipiosEnviaramDadosRNDS Float?
-  percentualCumprimentoPESNoExercicio Float?
-  taxaSatisfacaoMunicipiosApoioGERES Float?
-  percentualResolucaoAcoesCompetenciasGERES Float?
-  taxaMortalidadePorCausasEvitaeis Float?
-  proporcaoNascidosVivosMae7OuMaisConsultasPreNatal Float?
-  taxaMortalidadeAcidentesTransporteTerrestre Float?
-  percentualReducaoFilaConsultas Float?
-  percentualAproveitamentoCotasExamesImagem Float?
-  percentualInvestigacaoEpidemiologicaObitosAcidenteTrabalho Float?
-  percentualReducaoFilaExamesImagem Float?
+  percentualResolucaoAcoesCompetenciasGeresProgramaGeresPercorre Float?
+  taxaMortalidadeCausasEvitaveis Float?
+  proporcaoNascidosVivosMaes7ConsultasPrenatal  Float?
+  taxaMortalidadeAcidentesTransporteTerrestre  Float?
   percentualMortalidadeNaoHospitalarDCNT Float?
   percentualMortalidadeNaoHospitalarInfancia Float?
   percentualMortalidadeNaoHospitalarMaterna Float?
   percentualCoberturaVacinalPorRegional Float?
-  percentualMortesAEsclarecerPorRegional Float?
+  percentualMortesEsclarecerPorRegional Float?
   percentualFilaEsperaPorRegional Float?
   
   dataInicio String
