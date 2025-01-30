@@ -14,32 +14,30 @@ const createDataFormSchema = z.object({
 });
 
 const indicatorsMap: { [key: string]: string } = {
-"% DE AÇÕES FINANCEIRAS EXECUTADAS EM TEMPO HÁBIL (60 DIAS)": "percentualAcoesFinanceirasExecutadas",
-  "TAXA DE SATISFAÇÃO DOS MUNICÍPIOS EM RELAÇÃO AO APOIO DAS GERES": "taxaSatisfacaoMunicipiosApoioGeres",
-  "% DE RESOLUÇÃO DAS AÇÕES DE COMPETÊNCIAS DA GERES": "percentualResolucaoAcoesCompetenciasGeres",
-  "% DE MUNICÍPIOS VISITADOS": "percentualMunicipiosVisitados",
-  "NÚMERO DE MUNICÍPIOS QUE ATINGIRAM A COBERTURA VACINAL EM MENORES DE 2 ANOS": "numeroMunicipiosCoberturaVacinalMenores2Anos",
-  "% DE MUNICÍPIOS QUE ENVIARAM DADOS PARA A RNDS": "percentualMunicipiosEnviaramDadosRNDS",
-  "% DE CUMPRIMENTO DO PES NO EXERCÍCIO": "percentualCumprimentoPesExercicio",
-  "% DE ÁREAS TÉCNICAS COM SALAS DE SITUAÇÃO INSTITUIDAS": "percentualAreasTecnicasComSalasSituacaoInstituidas",
+  "% DE AÇÕES FINANCEIRAS EXECUTADAS EM TEMPO HÁBIL (60 DIAS)": "percentualAcoesFinanceirasExecutadas",
+  "% DE ÁREAS TÉCNICAS COM SALAS DE SITUAÇÃO INSTITUÍDAS": "percentualAreasTecnicasComSalasSituacaoInstituidas",
   "% DAS AÇÕES DE REGIONALIZAÇÃO DESENVOLVIDAS PELA GERES NO TERRITÓRIO": "percentualAcoesRegionalizacaoDesenvolvidasGeres",
   "% DE VINCULAÇÃO DA GESTANTE AO SERVIÇO DE REFERÊNCIA AO PARTO": "percentualVinculacaoGestanteServicoReferenciaParto",
   "% DE ÓBITOS INFANTIS E FETAIS INVESTIGADOS EM TEMPO OPORTUNO.": "percentualObitosInfantisFetaisInvestigados",
-  "% DE REDUÇÃO DE FILA DE CONSULTAS": "percentualReducaoFilaConsultas",
-  "% DE REDUÇÃO DE FILA DE EXAMES DE IMAGE": "percentualReducaoFilaExamesImagem",
-  "% DE INVESTIGAÇÃO EPIDEMIOLÓGICA DOS ÓBITOS POR ACIDENTE DE TRABALHO": "percentualInvestigacaoEpidemiologicaObitosAcidenteTrabalho",
-  "% DE APROVEITAMENTO DAS COTAS DE EXAME DE IMAGEM (TOMOGRAFIA E RM)": "percentualAproveitamentoCotasExameImagem",
+  "NÚMERO DE MUNICÍPIOS QUE ATINGIRAM A COBERTURA VACINAL EM MENORES DE 2 ANOS": "numeroMunicipiosCoberturaVacinalMenores2Anos",
   "% DE INTERNAÇÃO POR CAUSAS SENSÍVEIS A APS": "percentualInternacaoCausasSensiveisAPS",
-  "% DE ABSENTEISMO DE CONSULTAS E EXAMES": "percentualAbsenteismoConsultasExames",
   "% DE PERDA PRIMÁRIA DE COTAS DE CONSULTAS E EXAMES": "percentualPerdaPrimariaCotasConsultasExames",
-  "% DE PACIENTES COM RETORNO GARANTIDO NO SERVIÇO DAS UPAES": "percentualPacientesRetornoGarantidoUPAEs",
-  "% DE GESTANTES DE ALTO RISCO ACOMPANHADAS ADEQUADAMENTE": "percentualGestantesAltoRiscoAcompanhadasAdequadamente",
+  "% DE ABSENTEÍSMO DE CONSULTAS E EXAMES": "percentualAbsenteismoConsultasExames",
   "TAXA DE MORTALIDADE MATERNA": "taxaMortalidadeMaterna",
   "TAXA DE MORTALIDADE INFANTIL": "taxaMortalidadeInfantil",
+  "% DE GESTANTES DE ALTO RISCO ACOMPANHADAS ADEQUADAMENTE": "percentualGestantesAltoRiscoAcompanhadasAdequadamente",
+  "% DE PACIENTES COM RETORNO GARANTIDO NO SERVIÇO DAS UPAES": "percentualPacientesRetornoGarantidoUPAEs",
+  "% DE MUNICÍPIOS QUE ENVIARAM DADOS PARA A RNDS": "percentualMunicipiosEnviaramDadosRNDS",
+  "% DE CUMPRIMENTO DO PES NO EXERCÍCIO": "percentualCumprimentoPesExercicio",
+  "TAXA DE SATISFAÇÃO DOS MUNICÍPIOS EM RELAÇÃO AO APOIO DAS GERES": "taxaSatisfacaoMunicipiosApoioGeres",
   "% DE RESOLUÇÃO DAS AÇÕES DE COMPETÊNCIAS DA GERES NO PROGRAMA GERES PERCORRE": "percentualResolucaoAcoesCompetenciasGeresProgramaGeresPercorre",
   "TAXA DE MORTALIDADE POR CAUSAS EVITÁVEIS": "taxaMortalidadeCausasEvitaveis",
-  "PROPORÇÃO DE NASCIDOS VIVOS DE MÃES COM 7 OU MAIS CONSULTAS DE PRÉ-NATAL": "proporcaoNascidosVivosMães7ConsultasPrenatal",
+  "PROPORÇÃO DE NASCIDOS VIVOS DE MÃES COM 7 OU MAIS CONSULTAS DE PRÉ-NATAL": "proporcaoNascidosVivosMaes7ConsultasPrenatal",
   "TAXA DE MORTALIDADE POR ACIDENTES DE TRANSPORTE TERRESTRE": "taxaMortalidadeAcidentesTransporteTerrestre",
+  "% DE REDUÇÃO DE FILA DE CONSULTAS": "percentualReducaoFilaConsultas",
+  "% DE APROVEITAMENTO DAS COTAS DE EXAME DE IMAGEM (TOMOGRAFIA E RM)": "percentualAproveitamentoCotasExameImagem",
+  "% DE INVESTIGAÇÃO EPIDEMIOLÓGICA DOS ÓBITOS POR ACIDENTE DE TRABALHO": "percentualInvestigacaoEpidemiologicaObitosAcidenteTrabalho",
+  "% DE REDUÇÃO DE FILA DE EXAMES DE IMAGEM": "percentualReducaoFilaExamesImagem",
   "% DE MORTALIDADE NÃO HOSPITALAR POR DCNT": "percentualMortalidadeNaoHospitalarDCNT",
   "% DE MORTALIDADE NÃO HOSPITALAR NA INFÂNCIA": "percentualMortalidadeNaoHospitalarInfancia",
   "% DE MORTALIDADE NÃO HOSPITALAR MATERNA": "percentualMortalidadeNaoHospitalarMaterna",
@@ -60,6 +58,7 @@ export default async function formRoutes(fastify: FastifyInstance) {
   fastify.post("/addData", async (request, reply) => {
     // 5. Validação de tipos com Zod
     const validationResult = createDataFormSchema.safeParse(request.body);
+    console.log(validationResult.data?.values)
     if (!validationResult.success) {
       return reply.status(400).send({
         message: "Dados inválidos",

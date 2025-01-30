@@ -36,38 +36,37 @@ model DataForm {
   idUser Int
   user   User   @relation(fields: [idUser], references: [id])
   
-  percentualAcoesFinanceirasExecutadas Float? 
-  taxaSatisfacaoMunicipiosApoioGeres Float?
-  percentualResolucaoAcoesCompetenciasGeres Float?
-  percentualMunicipiosVisitados Float?
-  numeroMunicipiosCoberturaVacinalMenores2Anos Float?
-  percentualMunicipiosEnviaramDadosRNDS Float?
-  percentualCumprimentoPesExercicio Float?
-  percentualAreasTecnicasComSalasSituacaoInstituidas Float?
-  percentualAcoesRegionalizacaoDesenvolvidasGeres Float?
-  percentualVinculacaoGestanteServicoReferenciaParto Float?
-  percentualObitosInfantisFetaisInvestigados Float?
-  percentualReducaoFilaConsultas Float?
-  percentualReducaoFilaExamesImagem Float?
-  percentualInvestigacaoEpidemiologicaObitosAcidenteTrabalho Float?
-  percentualAproveitamentoCotasExameImagem Float?
-  percentualInternacaoCausasSensiveisAPS Float?
-  percentualAbsenteismoConsultasExames Float?
-  percentualPerdaPrimariaCotasConsultasExames Float?
-  percentualPacientesRetornoGarantidoUPAEs Float?
-  percentualGestantesAltoRiscoAcompanhadasAdequadamente Float?
-  taxaMortalidadeMaterna Float?
-  taxaMortalidadeInfantil Float?
-  percentualResolucaoAcoesCompetenciasGeresProgramaGeresPercorre Float?
-  taxaMortalidadeCausasEvitaveis Float?
-  proporcaoNascidosVivosMaes7ConsultasPrenatal  Float?
-  taxaMortalidadeAcidentesTransporteTerrestre  Float?
-  percentualMortalidadeNaoHospitalarDCNT Float?
-  percentualMortalidadeNaoHospitalarInfancia Float?
-  percentualMortalidadeNaoHospitalarMaterna Float?
-  percentualCoberturaVacinalPorRegional Float?
-  percentualMortesEsclarecerPorRegional Float?
-  percentualFilaEsperaPorRegional Float?
+percentualAcoesFinanceirasExecutadas Float?
+percentualAreasTecnicasComSalasSituacaoInstituidas Float?
+percentualAcoesRegionalizacaoDesenvolvidasGeres Float?
+percentualVinculacaoGestanteServicoReferenciaParto Float?
+percentualObitosInfantisFetaisInvestigados Float?
+numeroMunicipiosCoberturaVacinalMenores2Anos Float?
+percentualInternacaoCausasSensiveisAPS Float?
+percentualPerdaPrimariaCotasConsultasExames Float?
+percentualAbsenteismoConsultasExames Float?
+taxaMortalidadeMaterna Float?
+taxaMortalidadeInfantil Float?
+percentualGestantesAltoRiscoAcompanhadasAdequadamente Float?
+percentualPacientesRetornoGarantidoUPAEs Float?
+percentualMunicipiosEnviaramDadosRNDS Float?
+percentualCumprimentoPesExercicio Float?
+taxaSatisfacaoMunicipiosApoioGeres Float?
+percentualResolucaoAcoesCompetenciasGeresProgramaGeresPercorre Float?
+taxaMortalidadeCausasEvitaveis Float?
+proporcaoNascidosVivosMaes7ConsultasPrenatal Float?
+taxaMortalidadeAcidentesTransporteTerrestre Float?
+percentualReducaoFilaConsultas Float?
+percentualAproveitamentoCotasExameImagem Float?
+percentualInvestigacaoEpidemiologicaObitosAcidenteTrabalho Float?
+percentualReducaoFilaExamesImagem Float?
+percentualMortalidadeNaoHospitalarDCNT Float?
+percentualMortalidadeNaoHospitalarInfancia Float?
+percentualMortalidadeNaoHospitalarMaterna Float?
+percentualCoberturaVacinalPorRegional Float?
+percentualMortesEsclarecerPorRegional Float?
+percentualFilaEsperaPorRegional Float?
+
   
   dataInicio String
   dataFinal String
