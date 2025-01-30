@@ -94,7 +94,7 @@ const DataForm = () => {
     };
 
     await api.post("/addData", payload);
-    console.log(payload);
+    valuesList.every((val) => val.valor = '');
     setIsModalOpen(false);
   };
 
