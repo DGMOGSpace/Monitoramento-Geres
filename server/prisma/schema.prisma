@@ -8,19 +8,18 @@ datasource db {
 }
 
 model User {
-  id             Int        @id @default(autoincrement())
-  fullName       String
-  password       String
-  active         Boolean    @default(true)
-  modifyPassword Boolean    @default(false)
-  geres          Int
-  setor          String
-  cargo          String
-  admin          Boolean
-  email          String     @unique
-  createdAt      DateTime   @default(now())
-  logs           Log[]
-  dataForms      DataForm[]
+  id        Int        @id @default(autoincrement())
+  fullName  String
+  password  String
+  active    Boolean    @default(true)
+  geres     Int
+  setor     String
+  cargo     String
+  admin     Boolean
+  email     String     @unique
+  createdAt DateTime   @default(now())
+  logs      Log[]
+  dataForms DataForm[]
 }
 
 model Log {

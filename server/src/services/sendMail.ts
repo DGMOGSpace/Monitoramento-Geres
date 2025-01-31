@@ -34,6 +34,9 @@ async function sendEmail(email: string, password: string): Promise<void> {
         <p style="color: #555;">
           Aqui está a sua nova senha para acessar o sistema de monitoramento de GERES:
         </p>
+        <h3 style="color: #007bff; padding: 10px; border-radius: 5px; display: inline-block;">
+          ${email}
+        </h3>
         <h3 style="background-color: #007bff; color: white; padding: 10px; border-radius: 5px; display: inline-block;">
           ${password}
         </h3>

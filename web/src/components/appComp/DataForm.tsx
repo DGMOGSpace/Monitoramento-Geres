@@ -31,7 +31,6 @@ import {
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-// Esquema de validação usando Zod
 const FormSchema = z.object({
   startDate: z.string().nonempty("Data de início é obrigatória."),
   endDate: z.string().nonempty("Data de término é obrigatória."),
@@ -61,7 +60,6 @@ const DataForm = () => {
 
   console.log(valuesList)
 
-  // Usando react-hook-form com Zod para validação
   const form = useForm({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -85,7 +83,7 @@ const DataForm = () => {
   form.getValues().endDate &&
   valuesList.every((val) => val.valor.trim() !== '');
 
-  // Submissão do formulário
+
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     const payload = {
       ...data,
@@ -105,7 +103,6 @@ const DataForm = () => {
       </h2>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          {/* Accordion para os indicadores */}
           <Accordion type="multiple">
             {Object.entries(dados.temasIndicadores).map(
               ([tema, indicadores]) => (
@@ -160,13 +157,13 @@ const DataForm = () => {
                           </div>
                         );
                       })}
+
                   </AccordionContent>
                 </AccordionItem>
               )
             )}
           </Accordion>
 
-          {/* Campo de data de início */}
           <FormField
             control={form.control}
             name="startDate"
@@ -189,7 +186,6 @@ const DataForm = () => {
             )}
           />
 
-          {/* Campo de data de término */}
           <FormField
             control={form.control}
             name="endDate"
@@ -212,7 +208,6 @@ const DataForm = () => {
             )}
           />
 
-          {/* Botão para abrir o modal de confirmação */}
           <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
             <DialogTrigger asChild>
               <Button
@@ -240,22 +235,16 @@ const DataForm = () => {
                 </DialogDescription>
               </DialogHeader>
               <div className="space-y-4">
-                <p>
-                  <strong>Data de Início:</strong> {form.getValues().startDate}
-                </p>
-                <p>
-                  <strong>Data de Término:</strong> {form.getValues().endDate}
-                </p>
-                <div>
-                  <strong>Valores:</strong>
-                  <ul className="list-disc pl-5">
-                    {valuesList.map((item, index) => (
-                      <li key={index} className="text-gray-800">
-                        <strong>{item.indicador}:</strong> {item.valor}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                <span className="font-semibold">PERÍODO DOS DADOS:</span>{" "}
+                {form.getValues().startDate} e {form.getValues().endDate}
+                <ul className="list-disc pl-5 max-h-60 overflow-y-scroll">
+                  {valuesList.map((item, index) => (
+                    <li key={index} className="my-2 text-gray-800">
+                      <span className="font-semibold">{item.indicador}:</span>{" "}
+                      {item.valor}
+                    </li>
+                  ))}
+                </ul>
               </div>
               <DialogFooter>
                 <Button
