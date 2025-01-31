@@ -7,7 +7,7 @@ import {
   CardDescription,
   CardContent,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+// import { Button } from "@/components/ui/button";
 
 interface GeresData {
   geres: number;
@@ -53,15 +53,15 @@ export function Dashboard() {
     return "bg-gray-100";
   };
 
-  const handleSendAlert = async (geres: number) => {
-    try {
-      await api.post("/send-alert", { geres });
-      alert(`Alerta enviado para a GERES ${geres}.`);
-    } catch (error) {
-      console.error("Erro ao enviar alerta:", error);
-      alert("Erro ao enviar alerta.");
-    }
-  };
+  // const handleSendAlert = async (geres: number) => {
+  //   try {
+  //     await api.post("/send-alert", { geres });
+  //     alert(`Alerta enviado para a GERES ${geres}.`);
+  //   } catch (error) {
+  //     console.error("Erro ao enviar alerta:", error);
+  //     alert("Erro ao enviar alerta.");
+  //   }
+  // };
 
   return (
     <Card className="shadow-md rounded-lg p-4 mb-6 h-full">
@@ -89,13 +89,13 @@ export function Dashboard() {
                 </CardHeader>
                 <CardContent className="p-2 h-3/6 flex flex-col justify-end">
                   <p className="text-xs text-gray-500">Usuário: {fullName}</p>
-                  <Button
+                  { /* <Button
                     onClick={() => handleSendAlert(geres)}
                     className="mt-2 bg-blue-600 text-white px-3 py-1 rounded-lg shadow hover:bg-blue-700 transition duration-200"
                     disabled={cardClass !== "bg-red-100"}
                   >
                     Enviar Alerta
-                  </Button>
+                  </Button> */}
                 </CardContent>
               </Card>
             </div>

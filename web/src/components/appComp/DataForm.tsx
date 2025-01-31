@@ -47,6 +47,8 @@ interface IndicatorValue {
 const DataForm = () => {
   const { user } = useAuth();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+  const [groupingEnabled, setGroupingEnabled] = useState(true);
 
   const [valuesList, setValuesList] = useState<IndicatorValue[]>(() => {
     const initialValues: IndicatorValue[] = [];
@@ -92,8 +94,10 @@ const DataForm = () => {
     };
 
     await api.post("/addData", payload);
-    valuesList.every((val) => val.valor = '');
+    valuesList.forEach((val) => (val.valor = ''));
+    form.reset();
     setIsModalOpen(false);
+    setIsSuccessModalOpen(true);
   };
 
   return (
@@ -103,41 +107,54 @@ const DataForm = () => {
       </h2>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <Accordion type="multiple">
-            {Object.entries(dados.temasIndicadores).map(
-              ([tema, indicadores]) => (
-                <AccordionItem key={tema} value={tema}>
-                  <AccordionTrigger
-                    className={`relative flex justify-between items-center p-4 rounded-lg transition-colors ${
-                      indicadores.every(indicador => 
-                        valuesList.some(
-                          item => item.indicador === indicador && item.valor.trim() !== ''
-                        )
-                      )
-                        ? "bg-green-300"
-                        : "bg-white"
-                    } shadow hover:bg-green-100`}
-                  >
-                    <span className="text-lg font-semibold hover:underline text-gray-700">
-                      {tema}
-                    </span>
-                    <span
-                      className={`text-green-500 absolute right-10 transition-opacity duration-200 ${
-                        indicadores.every((indicador) =>
+          <div className="flex items-center mb-4">
+            <input
+              id="grouping"
+              type="checkbox"
+              checked={groupingEnabled}
+              onChange={() => setGroupingEnabled(!groupingEnabled)}
+              className="mr-2"
+            />
+            <label htmlFor="grouping" className="text-gray-700 font-medium">
+              Habilitar Agrupamento
+            </label>
+          </div>
+          {groupingEnabled ? (
+            <Accordion type="multiple">
+              {Object.entries(dados.temasIndicadores).map(
+                ([tema, indicadores]) => (
+                  <AccordionItem key={tema} value={tema}>
+                    <AccordionTrigger
+                      className={`relative flex justify-between items-center p-4 rounded-lg transition-colors ${
+                        indicadores.every(indicador => 
                           valuesList.some(
-                            (item) => item.indicador === indicador && item.valor
+                            item => item.indicador === indicador && item.valor.trim() !== ''
                           )
                         )
-                          ? "opacity-100"
-                          : "opacity-0"
-                      }`}
-                      style={{ textDecoration: "none" }}
+                          ? "bg-green-300"
+                          : "bg-white"
+                      } shadow hover:bg-green-100`}
                     >
-                      ✓
-                    </span>
-                  </AccordionTrigger>
-                  <AccordionContent className="p-4">
-                  {indicadores.map((indicador) => {
+                      <span className="text-lg font-semibold hover:underline text-gray-700">
+                        {tema}
+                      </span>
+                      <span
+                        className={`text-green-500 absolute right-10 transition-opacity duration-200 ${
+                          indicadores.every((indicador) =>
+                            valuesList.some(
+                              (item) => item.indicador === indicador && item.valor
+                            )
+                          )
+                            ? "opacity-100"
+                            : "opacity-0"
+                        }`}
+                        style={{ textDecoration: "none" }}
+                      >
+                        ✓
+                      </span>
+                    </AccordionTrigger>
+                    <AccordionContent className="p-4">
+                      {indicadores.map((indicador) => {
                         const index = valuesList.findIndex(item => item.indicador === indicador);
                         return (
                           <div key={indicador} className="mb-4">
@@ -157,12 +174,33 @@ const DataForm = () => {
                           </div>
                         );
                       })}
-
-                  </AccordionContent>
-                </AccordionItem>
-              )
-            )}
-          </Accordion>
+                    </AccordionContent>
+                  </AccordionItem>
+                )
+              )}
+            </Accordion>
+          ) : (
+            Object.values(dados.temasIndicadores).flat().map((indicador) => {
+              const index = valuesList.findIndex(item => item.indicador === indicador);
+              return (
+                <div key={indicador} className="mb-4">
+                  <FormLabel className="text-gray-700 font-medium">
+                    {indicador}
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      min={0}
+                      placeholder="Valor"
+                      value={valuesList[index]?.valor || ''}
+                      onChange={(e) => handleValueChange(indicador, e.target.value)}
+                      className="border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-300 focus:outline-none w-full"
+                    />
+                  </FormControl>
+                </div>
+              );
+            })
+          )}
 
           <FormField
             control={form.control}
@@ -263,6 +301,28 @@ const DataForm = () => {
               </DialogFooter>
             </DialogContent>
           </Dialog>
+
+          <Dialog open={isSuccessModalOpen} onOpenChange={setIsSuccessModalOpen}>
+            <DialogContent className="min-w-max">
+              <DialogHeader>
+                <DialogTitle className="text-xl font-bold">
+                  Sucesso!
+                </DialogTitle>
+                <DialogDescription>
+                  Dados enviados com sucesso!
+                </DialogDescription>
+              </DialogHeader>
+              <DialogFooter>
+                <Button
+                  onClick={() => setIsSuccessModalOpen(false)}
+                  className="bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300 rounded-md shadow-md"
+                >
+                  Fechar
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+
         </form>
       </Form>
     </div>

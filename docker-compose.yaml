@@ -1,0 +1,17 @@
+services:
+  server:
+    build: .
+    image: monitoramento-geres-v-0.1
+    container_name: monitoramento-geres
+    ports:
+      - "3020:3020"
+    volumes:
+      - ./prisma:/usr/src/app/prisma
+    restart: always
+  web:
+    build: ./web
+    image: vitets-nginx
+    container_name: vitets-nginx
+    ports:
+      - "80:80"
+    restart: always
