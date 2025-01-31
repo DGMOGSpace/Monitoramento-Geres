@@ -3,10 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon src/index.ts",
+    "dev": "nodemon",
     "build": "tsc",
-    "start": "node dist/src/server.js",
-    "start:pm2": "pm2 start dist/src/server.js"
+    "start": "node dist/server.js"
   },
   "dependencies": {
     "@fastify/cors": "^10.0.1",
@@ -18,7 +17,8 @@
     "exceljs": "^4.4.0",
     "fastify": "^5.0.0",
     "jsonwebtoken": "^9.0.2",
-    "nodemailer": "^6.9.15"
+    "nodemailer": "^6.9.15",
+    "zod": "^3.24.1"
   },
   "devDependencies": {
     "@types/node": "^22.7.4",

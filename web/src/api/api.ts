@@ -1,6 +1,6 @@
 import axios from "axios";
 
 export const api = axios.create({
-  baseURL: "http://localhost:3000",
-  // baseURL: "http://191.252.60.33:3005",
+  baseURL: "http://localhost:3020/",
+  // baseURL: "http://dgmog.saude.pe.gov.br/api/monitoramento-geres/",
 });
