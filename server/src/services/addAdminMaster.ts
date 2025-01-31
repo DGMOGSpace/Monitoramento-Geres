@@ -4,14 +4,13 @@ require("dotenv").config();
 
 const prisma = new PrismaClient();
 
-async function createAdminUser() {
+export async function createAdminUser() {
   try {
     const newUser = await prisma.user.create({
       data: {
         fullName: "Admin Master",
         password: process.env["ADMIN_PASS"] || "dgmopassword",
         email: "dgmog.ses@gmail.com",
-        modifyPassword: true,
         geres: 1,
         cargo: "Admin",
         setor: "Admin",
@@ -26,4 +25,3 @@ async function createAdminUser() {
   }
 }
 
-createAdminUser();

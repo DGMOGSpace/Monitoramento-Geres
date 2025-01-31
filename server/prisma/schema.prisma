@@ -4,23 +4,22 @@ generator client {
 
 datasource db {
   provider = "sqlite"
-  url      = "file:./dev.db"
+  url      = "file:./data_monitoramente_geres.db"
 }
 
 model User {
-  id             Int        @id @default(autoincrement())
-  fullName       String
-  password       String
-  active         Boolean    @default(true)
-  modifyPassword Boolean    @default(false)
-  geres          Int
-  setor          String
-  cargo          String
-  admin          Boolean
-  email          String     @unique
-  createdAt      DateTime   @default(now())
-  logs           Log[]
-  dataForms      DataForm[]
+  id        Int        @id @default(autoincrement())
+  fullName  String
+  password  String
+  active    Boolean    @default(true)
+  geres     Int
+  setor     String
+  cargo     String
+  admin     Boolean
+  email     String     @unique
+  createdAt DateTime   @default(now())
+  logs      Log[]
+  dataForms DataForm[]
 }
 
 model Log {
@@ -32,28 +31,47 @@ model Log {
 }
 
 model DataForm {
-  id                                                              Int      @id @default(autoincrement())
-  idUser                                                          Int
-  user                                                            User     @relation(fields: [idUser], references: [id])
-  execucao_do_orcamento_por_regional                              Float?
-  taxa_de_satisfacao_municipios_apoio_geres                       Float?
-  resolucao_acoes_competencias_geres                              Float?
-  municipios_visitados                                            Float?
-  aproveitamento_cotas_exame_imagem                               Float?
-  taxa_perda_primaria_upae                                        Float?
-  taxa_absenteismo                                                Float?
-  cumprimento_pes_quadrimestre                                    Float?
-  cumprimento_pes_exercicio                                       Float?
-  indice_qualificacao_acoes_vigilancia                            Float?
-  aproveitamento_cotas_consultas_especializadas                   Float?
-  municipios_instrumentos_gestao_sus_atualizados                  Float?
-  implementacao_planejamento_estrategico                          Float?
-  engajamento_gestores_reunioes_grupos_condutores_macrorregionais Float?
-  integracao_grupos_condutores_rede_pri                           Float?
-  participacao_gestores_reunioes_camara_tecnica_ct_cir            Float?
-  participacao_gestores_reunioes_cir                              Float?
-  dataInicio                                                      String
-  dataFinal                                                       String
-  createdAt                                                       DateTime @default(now())
-  logs                                                            Log[]
+  id     Int    @id @default(autoincrement())
+  idUser Int
+  user   User   @relation(fields: [idUser], references: [id])
+  
+percentualAcoesFinanceirasExecutadas Float?
+percentualAreasTecnicasComSalasSituacaoInstituidas Float?
+percentualAcoesRegionalizacaoDesenvolvidasGeres Float?
+percentualVinculacaoGestanteServicoReferenciaParto Float?
+percentualObitosInfantisFetaisInvestigados Float?
+numeroMunicipiosCoberturaVacinalMenores2Anos Float?
+percentualInternacaoCausasSensiveisAPS Float?
+percentualPerdaPrimariaCotasConsultasExames Float?
+percentualAbsenteismoConsultasExames Float?
+taxaMortalidadeMaterna Float?
+taxaMortalidadeInfantil Float?
+percentualGestantesAltoRiscoAcompanhadasAdequadamente Float?
+percentualPacientesRetornoGarantidoUPAEs Float?
+percentualMunicipiosEnviaramDadosRNDS Float?
+percentualCumprimentoPESNoExercicio Float?
+taxaSatisfacaoMunicipiosApoioGERES Float?
+percentualResolucaoAcoesCompetenciasGERES Float?
+taxaMortalidadePorCausasEvitaveis Float?
+proporcaoNascidosVivosMae7OuMaisConsultasPreNatal Float?
+percentualReducaoFilaConsultas Float?
+percentualAproveitamentoCotasExamesImagem Float?
+percentualInvestigacaoEpidemiologicaObitosAcidenteTrabalho Float?
+percentualReducaoFilaExamesImagem Float?
+percentualMortalidadeNaoHospitalarDCNT Float?
+percentualMortalidadeNaoHospitalarInfancia Float?
+percentualMortalidadeNaoHospitalarMaterna Float?
+percentualCoberturaVacinalPorRegional Float?
+percentualMortesAEsclarecerPorRegional Float?
+percentualFilaEsperaPorRegional Float?
+taxaMortalidadeAcidentesTransporteTerrestre Float?
+
+  
+  dataInicio String
+  dataFinal String
+  createdAt DateTime @default(now())
+  logs Log[]
 }
+
+
+

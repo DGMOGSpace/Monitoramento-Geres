@@ -1,132 +1,148 @@
 import { FastifyInstance } from "fastify";
 import { PrismaClient } from "@prisma/client";
-
+import z from "zod";
 const prisma = new PrismaClient();
 
+const createDataFormSchema = z.object({
+  startDate: z.string() ,
+  endDate: z.string(),
+  userId: z.number().int().positive(),
+  values: z.array(z.object({
+    indicador: z.string(),
+    valor: z.union([z.string(), z.number()])
+  }))
+});
+
 const indicatorsMap: { [key: string]: string } = {
-  "% DE EXECUÇÃO DO ORÇAMENTO POR REGIONAL":
-    "execucao_do_orcamento_por_regional",
-  "TAXA DE SATISFAÇÃO DOS MUNICÍPIOS EM RELAÇÃO AO APOIO DAS GERES":
-    "taxa_de_satisfacao_municipios_apoio_geres",
-  "% DE RESOLUÇÃO DAS AÇÕES DE COMPETÊNCIAS DA GERES":
-    "resolucao_acoes_competencias_geres",
-  "% DE MUNICÍPIOS VISITADOS": "municipios_visitados",
-  "% DE APROVEITAMENTO DAS COTAS DE EXAME DE IMAGEM (TOMOGRAFIA E RM)":
-    "aproveitamento_cotas_exame_imagem",
-  "TAXA DE PERDA PRIMÁRIA UPAE": "taxa_perda_primaria_upae",
-  "TAXA DE ABSENTEÍSMO": "taxa_absenteismo",
-  "% DE CUMPRIMENTO DO PES POR QUADRIMESTRE": "cumprimento_pes_quadrimestre",
-  "% DE CUMPRIMENTO DO PES NO EXERCÍCIO": "cumprimento_pes_exercicio",
-  "ÍNDICE DE QUALIFICAÇÃO DAS AÇÕES DE VIGILÂNCIA":
-    "indice_qualificacao_acoes_vigilancia",
-  "% DE APROVEITAMENTO DAS COTAS DE CONSULTAS ESPECIALIZADAS":
-    "aproveitamento_cotas_consultas_especializadas",
-  "% DOS MUNICÍPIOS COM OS INSTRUMENTOS DE GESTÃO DO SUS ATUALIZADOS":
-    "municipios_instrumentos_gestao_sus_atualizados",
-  "% DE IMPLEMENTAÇÃO DO PLANEJAMENTO ESTRATÉGICO":
-    "implementacao_planejamento_estrategico",
-  "% ENGAJAMENTO DOS GESTORES NAS REUNIÕES DOS GRUPOS CONDUTORES MACRORREGIONAIS":
-    "engajamento_gestores_reunioes_grupos_condutores_macrorregionais",
-  "% DE INTEGRAÇÃO ENTRE GRUPOS CONDUTORES DE REDE E O PRI":
-    "integracao_grupos_condutores_rede_pri",
-  "% PARTICIPAÇÃO DOS GESTORES NAS REUNIÕES DE CÂMARA TÉCNICA/CT CIR":
-    "participacao_gestores_reunioes_camara_tecnica_ct_cir",
-  "% PARTICIPAÇÃO DOS GESTORES NAS REUNIÕES DE CIR":
-    "participacao_gestores_reunioes_cir",
+  "% DE AÇÕES FINANCEIRAS EXECUTADAS EM TEMPO HÁBIL (60 DIAS)": "percentualAcoesFinanceirasExecutadas",
+  "% DE ÁREAS TÉCNICAS COM SALAS DE SITUAÇÃO INSTITUÍDAS": "percentualAreasTecnicasComSalasSituacaoInstituidas",
+  "% DAS AÇÕES DE REGIONALIZAÇÃO DESENVOLVIDAS PELA GERES NO TERRITÓRIO": "percentualAcoesRegionalizacaoDesenvolvidasGeres",
+  "% DE VINCULAÇÃO DA GESTANTE AO SERVIÇO DE REFERÊNCIA AO PARTO": "percentualVinculacaoGestanteServicoReferenciaParto",
+  "% DE ÓBITOS INFANTIS E FETAIS INVESTIGADOS EM TEMPO OPORTUNO.": "percentualObitosInfantisFetaisInvestigados",
+  "NÚMERO DE MUNICÍPIOS QUE ATINGIRAM A COBERTURA VACINAL EM MENORES DE 2 ANOS": "numeroMunicipiosCoberturaVacinalMenores2Anos",
+  "% DE INTERNAÇÃO POR CAUSAS SENSÍVEIS A APS": "percentualInternacaoCausasSensiveisAPS",
+  "% DE PERDA PRIMÁRIA DE COTAS DE CONSULTAS E EXAMES": "percentualPerdaPrimariaCotasConsultasExames",
+  "% DE ABSENTEÍSMO DE CONSULTAS E EXAMES": "percentualAbsenteismoConsultasExames",
+  "TAXA DE MORTALIDADE MATERNA": "taxaMortalidadeMaterna",
+  "TAXA DE MORTALIDADE INFANTIL": "taxaMortalidadeInfantil",
+  "% DE GESTANTES DE ALTO RISCO ACOMPANHADAS ADEQUADAMENTE": "percentualGestantesAltoRiscoAcompanhadasAdequadamente",
+  "% DE PACIENTES COM RETORNO GARANTIDO NO SERVIÇO DAS UPAES": "percentualPacientesRetornoGarantidoUPAEs",
+  "% DE MUNICÍPIOS QUE ENVIARAM DADOS PARA A RNDS": "percentualMunicipiosEnviaramDadosRNDS",
+  "% DE CUMPRIMENTO DO PES NO EXERCÍCIO": "percentualCumprimentoPESNoExercicio",
+  "TAXA DE SATISFAÇÃO DOS MUNICÍPIOS EM RELAÇÃO AO APOIO DAS GERES": "taxaSatisfacaoMunicipiosApoioGERES",
+  "% DE RESOLUÇÃO DAS AÇÕES DE COMPETÊNCIAS DA GERES NO PROGRAMA GERES PERCORRE": "percentualResolucaoAcoesCompetenciasGERES",
+  "TAXA DE MORTALIDADE POR CAUSAS EVITÁVEIS": "taxaMortalidadePorCausasEvitaveis",
+  "PROPORÇÃO DE NASCIDOS VIVOS DE MÃES COM 7 OU MAIS CONSULTAS DE PRÉ-NATAL": "proporcaoNascidosVivosMae7OuMaisConsultasPreNatal",
+  "TAXA DE MORTALIDADE POR ACIDENTES DE TRANSPORTE TERRESTRE": "taxaMortalidadeAcidentesTransporteTerrestre",
+  "% DE REDUÇÃO DE FILA DE CONSULTAS": "percentualReducaoFilaConsultas",
+  "% DE APROVEITAMENTO DAS COTAS DE EXAME DE IMAGEM (TOMOGRAFIA E RM)": "percentualAproveitamentoCotasExamesImagem",
+  "% DE INVESTIGAÇÃO EPIDEMIOLÓGICA DOS ÓBITOS POR ACIDENTE DE TRABALHO": "percentualInvestigacaoEpidemiologicaObitosAcidenteTrabalho",
+  "% DE REDUÇÃO DE FILA DE EXAMES DE IMAGEM": "percentualReducaoFilaExamesImagem",
+  "% DE MORTALIDADE NÃO HOSPITALAR POR DCNT": "percentualMortalidadeNaoHospitalarDCNT",
+  "% DE MORTALIDADE NÃO HOSPITALAR NA INFÂNCIA": "percentualMortalidadeNaoHospitalarInfancia",
+  "% DE MORTALIDADE NÃO HOSPITALAR MATERNA": "percentualMortalidadeNaoHospitalarMaterna",
+  "% DE COBERTURA VACINAL POR REGIONAL": "percentualCoberturaVacinalPorRegional",
+  "% DE MORTES À ESCLARECER POR REGIONAL": "percentualMortesAEsclarecerPorRegional",
+  "% DE FILA DE ESPERA POR REGIONAL": "percentualFilaEsperaPorRegional"
 };
 
-export function ConvertFormLabel(
-  textToConvert: string,
-  dict: { [key: string]: string }
-): string {
-  return dict[textToConvert] || textToConvert; // Retorna o valor ou o texto original
-}
 
+export function convertFormLabel(
+  textToConvert: string,
+  dict: typeof indicatorsMap
+): keyof typeof indicatorsMap | null {
+  const key = Object.keys(dict).find(k => k === textToConvert.trim());
+  return key ? dict[key as keyof typeof indicatorsMap] : null;
+}
 export default async function formRoutes(fastify: FastifyInstance) {
   fastify.post("/addData", async (request, reply) => {
-    const { startDate, endDate, userId, values } = request.body as {
-      startDate: string;
-      endDate: string;
-      userId: number;
-      values: { indicador: string; valor: string | number }[];
-    };
-
-    // Validações de entrada
-    if (!startDate || !endDate || !userId || !Array.isArray(values)) {
-      return reply.status(400).send({ message: "Dados inválidos." });
+    // 5. Validação de tipos com Zod
+    const validationResult = createDataFormSchema.safeParse(request.body);
+    console.log(validationResult.data?.values)
+    if (!validationResult.success) {
+      return reply.status(400).send({
+        message: "Dados inválidos",
+        errors: validationResult.error.errors
+      });
     }
 
-    const dataFormValues: { [key: string]: number | null } = {
-      // inicializa valores...
-    };
+    const { startDate, endDate, userId, values } = validationResult.data;
 
-    const parseValue = (valor: string | number) => {
-      const floatValue = parseFloat(valor.toString());
-      return isNaN(floatValue) ? null : floatValue; // Retorna null se o valor for inválido
-    };
+    // 6. Validação adicional de datas
+    if (new Date(startDate) >= new Date(endDate)) {
+      return reply.status(400).send({
+        message: "Data final deve ser posterior à data inicial"
+      });
+    }
 
     try {
-      for (const item of values) {
-        const { indicador, valor } = item;
-        const convertedIndicator = ConvertFormLabel(indicador, indicatorsMap);
-        dataFormValues[convertedIndicator] = parseValue(valor);
-      }
+      // 7. Usar transação do Prisma
+      return await prisma.$transaction(async (tx) => {
+        const dataFormValues: Record<string, number | null> = {};
 
-      let dataFormId: number;
+        // 8. Processamento seguro dos valores
+        const parseValue = (valor: string | number): number | null => {
+          const num = Number(valor);
+          return Number.isFinite(num) ? num : null;
+        };
 
-      const existingDataForm = await prisma.dataForm.findFirst({
-        where: {
-          idUser: userId,
-          dataInicio: startDate
-         
-        },
-      });
+        // 9. Validação de indicadores
+        for (const item of values) {
+          const convertedIndicator = convertFormLabel(item.indicador, indicatorsMap);
+          if (!convertedIndicator) {
+            throw new Error(`Indicador inválido: ${item.indicador}`);
+          }
+          dataFormValues[convertedIndicator] = parseValue(item.valor);
+        }
 
-      if (existingDataForm) {
-        dataFormId = existingDataForm.id;
-        await prisma.dataForm.update({
-          where: { id: dataFormId },
-          data: {
+        // 10. Atualização/Inserção com verificação completa
+        const existingDataForm = await tx.dataForm.findFirst({
+          where: {
+            idUser: userId,
             dataInicio: startDate,
-            dataFinal: endDate,
-            user: {
-              connect: { id: userId },
-            },
-            ...dataFormValues,
+            dataFinal: endDate
           },
+          select: { id: true }
         });
-      } else {
-        const newDataForm = await prisma.dataForm.create({
+
+        let dataFormOperation;
+        if (existingDataForm) {
+          dataFormOperation = tx.dataForm.update({
+            where: { id: existingDataForm.id },
+            data: { ...dataFormValues }
+          });
+        } else {
+          dataFormOperation = tx.dataForm.create({
+            data: {
+              dataInicio: startDate,
+              dataFinal: endDate,
+              idUser: userId,
+              ...dataFormValues
+            }
+          });
+        }
+
+      const dataForm = await dataFormOperation;
+        await tx.log.create({
           data: {
-            dataInicio: startDate, // Utilize as variáveis corretas
-            dataFinal: endDate,
-            user: {
-              connect: { id: userId },
-            },
-            ...dataFormValues,
-          },
+            idUser: userId,
+            idForm: dataForm.id,  
+          }
         });
-        dataFormId = newDataForm.id;
-      }
 
-      await prisma.log.create({
-        data: {
-          idUser: userId,
-          idForm: dataFormId,
-        },
+        return reply.status(201).send({
+          message: "Dados processados com sucesso",
+          dataFormId: dataForm.id
+        });
       });
-
-      return reply.status(201).send({ message: "Dados enviados com sucesso." });
     } catch (error) {
-      console.error("Erro ao inserir/atualizar DataForm:", error);
-      return reply
-        .status(500)
-        .send({
-          message:
-            error instanceof Error
-              ? error.message
-              : "Erro ao inserir/atualizar DataForm.",
-        });
+      const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
+      console.error(`Erro: ${errorMessage}`, error);
+      
+      return reply.status(500).send({
+        message: "Erro no processamento dos dados",
+        error: process.env.NODE_ENV === 'development' ? errorMessage : undefined
+      });
     }
   });
 }

@@ -31,10 +31,12 @@ import {
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-// Esquema de validação usando Zod
 const FormSchema = z.object({
   startDate: z.string().nonempty("Data de início é obrigatória."),
   endDate: z.string().nonempty("Data de término é obrigatória."),
+}).refine(data => new Date(data.startDate) < new Date(data.endDate), {
+  message: "Data de término deve ser posterior à data de início",
+  path: ["endDate"],
 });
 
 interface IndicatorValue {
@@ -45,9 +47,19 @@ interface IndicatorValue {
 const DataForm = () => {
   const { user } = useAuth();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [valuesList, setValuesList] = useState<IndicatorValue[]>([]);
 
-  // Usando react-hook-form com Zod para validação
+  const [valuesList, setValuesList] = useState<IndicatorValue[]>(() => {
+    const initialValues: IndicatorValue[] = [];
+    Object.values(dados.temasIndicadores).forEach(indicadores => {
+      indicadores.forEach(indicador => {
+        initialValues.push({ indicador, valor: '' });
+      });
+    });
+    return initialValues;
+  });
+
+  console.log(valuesList)
+
   const form = useForm({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -57,28 +69,21 @@ const DataForm = () => {
   });
 
   // Função para manipular a mudança de valor dos indicadores
-  const handleValueChange = (
-    index: number,
-    field: keyof IndicatorValue,
-    value: string
-  ) => {
-    const newValuesList = [...valuesList];
-    newValuesList[index][field] = value;
-    setValuesList(newValuesList);
-  };
-
+    const handleValueChange = (indicador: string, value: string) => {
+      setValuesList(prev => 
+        prev.map(item => 
+          item.indicador === indicador ? { ...item, valor: value } : item
+        )
+      );
+    };
+    
   // Verificar se todos os campos (datas e indicadores) estão preenchidos
   const allFieldsFilled =
-    form.getValues().startDate &&
-    form.getValues().endDate &&
-    valuesList.length ===
-      Object.keys(dados.temasIndicadores).reduce(
-        (acc, key) => acc + (dados.temasIndicadores as Record<string, string[]>)[key].length,
-        0
-      ) &&
-    valuesList.every((val) => val.valor); // Verifica se todos os valores dos indicadores foram preenchidos
+  form.getValues().startDate &&
+  form.getValues().endDate &&
+  valuesList.every((val) => val.valor.trim() !== '');
 
-  // Submissão do formulário
+
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     const payload = {
       ...data,
@@ -87,7 +92,7 @@ const DataForm = () => {
     };
 
     await api.post("/addData", payload);
-    console.log(payload);
+    valuesList.every((val) => val.valor = '');
     setIsModalOpen(false);
   };
 
@@ -98,16 +103,15 @@ const DataForm = () => {
       </h2>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          {/* Accordion para os indicadores */}
           <Accordion type="multiple">
             {Object.entries(dados.temasIndicadores).map(
               ([tema, indicadores]) => (
                 <AccordionItem key={tema} value={tema}>
                   <AccordionTrigger
                     className={`relative flex justify-between items-center p-4 rounded-lg transition-colors ${
-                      indicadores.every((indicador) =>
+                      indicadores.every(indicador => 
                         valuesList.some(
-                          (item) => item.indicador === indicador && item.valor
+                          item => item.indicador === indicador && item.valor.trim() !== ''
                         )
                       )
                         ? "bg-green-300"
@@ -133,45 +137,33 @@ const DataForm = () => {
                     </span>
                   </AccordionTrigger>
                   <AccordionContent className="p-4">
-                    {indicadores.map((indicador) => (
-                      <div key={indicador} className="mb-4">
-                        <FormLabel className="text-gray-700 font-medium">
-                          {indicador}
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            type="number"
-                            min={0}
-                            placeholder="Valor"
-                            className="border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-300 focus:outline-none w-full"
-                            onChange={(e) => {
-                              const index = valuesList.findIndex(
-                                (item) => item.indicador === indicador
-                              );
-                              if (index >= 0) {
-                                handleValueChange(
-                                  index,
-                                  "valor",
-                                  e.target.value
-                                );
-                              } else {
-                                setValuesList([
-                                  ...valuesList,
-                                  { indicador, valor: e.target.value },
-                                ]);
-                              }
-                            }}
-                          />
-                        </FormControl>
-                      </div>
-                    ))}
+                  {indicadores.map((indicador) => {
+                        const index = valuesList.findIndex(item => item.indicador === indicador);
+                        return (
+                          <div key={indicador} className="mb-4">
+                            <FormLabel className="text-gray-700 font-medium">
+                              {indicador}
+                            </FormLabel>
+                            <FormControl>
+                              <Input
+                                type="number"
+                                min={0}
+                                placeholder="Valor"
+                                value={valuesList[index]?.valor || ''}
+                                onChange={(e) => handleValueChange(indicador, e.target.value)}
+                                className="border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-300 focus:outline-none w-full"
+                              />
+                            </FormControl>
+                          </div>
+                        );
+                      })}
+
                   </AccordionContent>
                 </AccordionItem>
               )
             )}
           </Accordion>
 
-          {/* Campo de data de início */}
           <FormField
             control={form.control}
             name="startDate"
@@ -194,7 +186,6 @@ const DataForm = () => {
             )}
           />
 
-          {/* Campo de data de término */}
           <FormField
             control={form.control}
             name="endDate"
@@ -217,7 +208,6 @@ const DataForm = () => {
             )}
           />
 
-          {/* Botão para abrir o modal de confirmação */}
           <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
             <DialogTrigger asChild>
               <Button
@@ -245,22 +235,16 @@ const DataForm = () => {
                 </DialogDescription>
               </DialogHeader>
               <div className="space-y-4">
-                <p>
-                  <strong>Data de Início:</strong> {form.getValues().startDate}
-                </p>
-                <p>
-                  <strong>Data de Término:</strong> {form.getValues().endDate}
-                </p>
-                <div>
-                  <strong>Valores:</strong>
-                  <ul className="list-disc pl-5">
-                    {valuesList.map((item, index) => (
-                      <li key={index} className="text-gray-800">
-                        <strong>{item.indicador}:</strong> {item.valor}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                <span className="font-semibold">PERÍODO DOS DADOS:</span>{" "}
+                {form.getValues().startDate} e {form.getValues().endDate}
+                <ul className="list-disc pl-5 max-h-60 overflow-y-scroll">
+                  {valuesList.map((item, index) => (
+                    <li key={index} className="my-2 text-gray-800">
+                      <span className="font-semibold">{item.indicador}:</span>{" "}
+                      {item.valor}
+                    </li>
+                  ))}
+                </ul>
               </div>
               <DialogFooter>
                 <Button

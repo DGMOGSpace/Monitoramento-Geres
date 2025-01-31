@@ -59,7 +59,8 @@ interface logsData {
     integracao_grupos_condutores_rede_pri: number;
     participacao_gestores_reunioes_camara_tecnica_ct_cir: number;
     participacao_gestores_reunioes_cir: number;
-    dataRef: string;
+    dataInicio: string;
+    dataFinal: string;
   };
   timestamp: string;
 }
@@ -93,7 +94,6 @@ export function Logs() {
   const indexOfLastLog = currentPage * logsPerPage;
   const indexOfFirstLog = indexOfLastLog - logsPerPage;
 
-  // Filtrar os logs com base no email pesquisado
   const filteredLogs = logsData.filter((log) =>
     log.user.email.toLowerCase().includes(searchEmail.toLowerCase())
   );
@@ -140,7 +140,9 @@ export function Logs() {
                   <TableCell>{log.idForm}</TableCell>
                   <TableCell>{log.user.geres}</TableCell>
                   <TableCell>{log.user.fullName}</TableCell>
-                  <TableCell>{log.form.dataRef}</TableCell>
+                  <TableCell>
+                    {log.form.dataInicio} a {log.form.dataInicio}
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -191,7 +193,7 @@ export function Logs() {
               <ul className="space-y-2">
                 <li>
                   <strong>Data de Referência:</strong>{" "}
-                  {selectedLog.form.dataRef}
+                  {selectedLog.form.dataInicio} a {selectedLog.form.dataFinal}
                 </li>
                 <li>
                   <strong>Execução do Orçamento por Regional:</strong>{" "}
