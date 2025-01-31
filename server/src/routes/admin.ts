@@ -317,7 +317,7 @@ export default async function adminRoutes(fastify: FastifyInstance) {
           percentualCumprimentoPesExercicio: log.form.percentualCumprimentoPESNoExercicio,
           taxaSatisfacaoMunicipiosApoioGeres: log.form.taxaSatisfacaoMunicipiosApoioGERES,
           percentualResolucaoAcoesCompetenciasGeresProgramaGeresPercorre: log.form.percentualResolucaoAcoesCompetenciasGERES,
-          taxaMortalidadeCausasEvitaveis: log.form.taxaMortalidadePorCausasEvitaeis,
+          taxaMortalidadeCausasEvitaveis: log.form.taxaMortalidadePorCausasEvitaveis,
           proporcaoNascidosVivosMaes7ConsultasPrenatal: log.form.proporcaoNascidosVivosMae7OuMaisConsultasPreNatal,
           percentualAproveitamentoCotasExameImagem: log.form.percentualAproveitamentoCotasExamesImagem,
           percentualMortesEsclarecerPorRegional: log.form.percentualMortesAEsclarecerPorRegional,

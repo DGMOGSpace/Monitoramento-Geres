@@ -53,7 +53,7 @@ percentualMunicipiosEnviaramDadosRNDS Float?
 percentualCumprimentoPESNoExercicio Float?
 taxaSatisfacaoMunicipiosApoioGERES Float?
 percentualResolucaoAcoesCompetenciasGERES Float?
-taxaMortalidadePorCausasEvitaeis Float?
+taxaMortalidadePorCausasEvitaveis Float?
 proporcaoNascidosVivosMae7OuMaisConsultasPreNatal Float?
 percentualReducaoFilaConsultas Float?
 percentualAproveitamentoCotasExamesImagem Float?
@@ -65,6 +65,7 @@ percentualMortalidadeNaoHospitalarMaterna Float?
 percentualCoberturaVacinalPorRegional Float?
 percentualMortesAEsclarecerPorRegional Float?
 percentualFilaEsperaPorRegional Float?
+taxaMortalidadeAcidentesTransporteTerrestre Float?
 
   
   dataInicio String
