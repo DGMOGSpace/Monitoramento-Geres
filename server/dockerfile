@@ -1,29 +1,22 @@
-# Usa a versão mais leve do Node.js
-FROM node:20-slim
+FROM node:20
+
 
 WORKDIR /usr/src/app
 
-# Copia apenas arquivos essenciais primeiro (para melhor cache)
 COPY package*.json ./
-RUN npm install --frozen-lockfile
 
-# Copia o restante do código
+RUN npm install
+
 COPY . .
 
-# Garante que a pasta do Prisma existe
 RUN mkdir -p /usr/src/app/prisma 
 
-# Gera os arquivos do Prisma
 RUN npx prisma generate
 
-# Evita reinstalação desnecessária do bcrypt (e outras libs nativas)
-RUN npm rebuild bcrypt
+RUN npm install bcrypt
 
-# Compila o código
 RUN npm run build
 
-# Expõe a porta do servidor
 EXPOSE 3020
 
-# Comando final (roda migrations antes de iniciar)
-CMD ["sh", "-c", "npx prisma db push && npm start"]
+CMD npx prisma db push && npm start
