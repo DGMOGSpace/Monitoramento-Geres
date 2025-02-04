@@ -24,21 +24,11 @@ const AuthForm = ({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const [error, setError] = useState("");
-  const [successMessage, setSuccessMessage] = useState(""); // Sucesso
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    try {
-      await signIn(email, password.trim());
-      setSuccessMessage("Usuário cadastrado e senha registrada.");
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error) {
-      setError("Erro ao fazer login.");
-    } finally {
-      setLoading(false);
-    }
+    await signIn(email, password.trim());
   };
 
   return (
@@ -62,10 +52,7 @@ const AuthForm = ({
         >
           Entrar
         </Button>
-        {error && <span className="text-red-500">{error}</span>}
-        {successMessage && (
-          <span className="text-green-500">{successMessage}</span>
-        )}
+        
       </div>
 
       <Dialog>

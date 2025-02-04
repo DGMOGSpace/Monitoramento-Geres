@@ -215,7 +215,7 @@ const DataForm = () => {
                     {...field}
                     type="date"
                     min="2024-01-01"
-                    max="2024-12-31"
+                    max="2025-12-31"
                     className="border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-300 focus:outline-none"
                   />
                 </FormControl>
@@ -237,7 +237,7 @@ const DataForm = () => {
                     {...field}
                     type="date"
                     min="2024-01-01"
-                    max="2026-12-31"
+                    max="2025-12-31"
                     className="border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-300 focus:outline-none"
                   />
                 </FormControl>

@@ -5,7 +5,8 @@ import { Dashboard } from "@/components/AdminComponents/Dashboard";
 import { UserManagement } from "@/components/AdminComponents/UserManagement";
 import { Logs } from "@/components/AdminComponents/Logs";
 import { useAuth } from "@/hooks/auth/useAuth";
-import { api } from "./api/api";
+import { api } from "../api/api";
+import { Navigate } from 'react-router-dom';
 
 enum ActiveTab {
   Dashboard = "dashboard",
@@ -15,8 +16,16 @@ enum ActiveTab {
 }
 
 export function Admin() {
-  const { signOut } = useAuth();
+  const { signed, user, signOut } = useAuth();
   const [activeTab, setActiveTab] = useState<ActiveTab>(ActiveTab.Dashboard);
+
+  if (!signed) {
+    return <Navigate to="/" replace />;
+  }
+
+  if (!user?.admin) {
+    return <Navigate to="/adicionar-dados" replace />;
+  }
 
   const handleDownload = async () => {
     try {
@@ -71,6 +80,12 @@ export function Admin() {
             onClick={handleDownload}
           >
             Baixar Logs Excel
+          </Button>
+          <Button
+            onClick={() => window.location.reload()}
+            className="w-full mb-2 bg-yellow-600 text-white hover:bg-yellow-700"
+          >
+            Atualizar Página
           </Button>
           <Button
             onClick={handleLogout}

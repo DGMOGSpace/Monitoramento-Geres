@@ -6,6 +6,15 @@ const prisma = new PrismaClient();
 
 export async function createAdminUser() {
   try {
+    const existingUser = await prisma.user.findUnique({
+      where: { email: "dgmog.ses@gmail.com" },
+    });
+
+    if (existingUser) {
+      console.log("User already exists:", existingUser);
+      return;
+    }
+
     const newUser = await prisma.user.create({
       data: {
         fullName: "Admin Master",

@@ -9,6 +9,8 @@ services:
     restart: unless-stopped
     networks:
       - monitoramento_geres_network
+    env_file:
+      - ./server/.env
 
   web:
     build: ./web
