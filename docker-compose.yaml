@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./server
+    container_name: monitoramento-geres-backend
+    expose:
+      - "3020" 
+    restart: unless-stopped
+    networks:
+      - monitoramento_geres_network
+    env_file:
+      - ./server/.env
+
+  web:
+    build: ./web
+    container_name: monitoramento-geres-frontend
+    ports:
+      - "3001:5000"
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - monitoramento_geres_network
+
+networks:
+  monitoramento_geres_network:
+    driver: bridge

@@ -1,8 +1,8 @@
 import { createContext, useState, ReactNode, useEffect } from "react";
 import { api } from "@/api/api";
 import { saveAuthData, clearAuthData, getAuthData } from "./AuthHelpers";
-import UserInterface from "../../interfaces/User";
-
+import UserInterface from "@/interfaces/User";
+import { useToast } from "../use-toast";
 interface AuthContextType {
   user: UserInterface | null;
   signed: boolean;
@@ -16,6 +16,7 @@ export const AuthContext = createContext<AuthContextType | undefined>(
 );
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
+  const { toast } = useToast(); 
   const [user, setUser] = useState<UserInterface | null>(null);
   const [token, setToken] = useState<string | null>(null);
 
@@ -30,10 +31,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const signIn = async (email: string, password: string) => {
     try {
+   
+
       const response = await api.post("/login", { email, password });
-      console.log(response.data);
       if (response.data.error) {
-        alert(response.data.error);
+        toast({
+          title: "Falha no Login",
+          description: response.data.error,
+          variant: "destructive",
+        });
       } else {
         setUser(response.data.user);
         setToken(response.data.token);
@@ -41,10 +47,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           "Authorization"
         ] = `Bearer ${response.data.token}`;
         saveAuthData(response.data.user, response.data.token);
+        toast({
+          title: "Sucesso",
+          description: "Login realizado com sucesso!",
+        });
       }
     } catch (error) {
       console.error("Login failed:", error);
-      alert("Failed to sign in. Please try again.");
+      toast({
+        title: "Erro",
+        description: "Falha ao tentar realizar o login. Tente novamente.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -53,6 +67,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setToken(null);
     clearAuthData();
     delete api.defaults.headers.common["Authorization"];
+    toast({
+      title: "Logout",
+      description: "Você foi desconectado.",
+    });
   };
 
   return (

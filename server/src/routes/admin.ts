@@ -27,39 +27,29 @@ export default async function adminRoutes(fastify: FastifyInstance) {
     };
 
     try {
-      const existingUser = await prisma.user.findUnique({
-        where: { email },
-      });
+      const existingUser = await prisma.user.findUnique({ where: { email } });
 
       if (existingUser) {
-        return reply
-          .status(400)
-          .send({ message: "Usuário já existe com este email." });
+        return reply.status(400).send({ message: "Usuário já existe com este email." });
       }
 
       const geresInt = parseInt(geres, 10);
-
       if (isNaN(geresInt)) {
-        return reply
-          .status(400)
-          .send({ message: "GERES deve ser um número válido" });
+        return reply.status(400).send({ message: "GERES deve ser um número válido" });
       }
 
       const password = crypto.randomBytes(12).toString("hex");
 
       const user = await prisma.user.create({
-        data: {
-          fullName,
-          geres: geresInt,
-          admin,
-          email,
-          cargo,
-          setor,
-          password,
-        },
+        data: { fullName, geres: geresInt, admin, email, cargo, setor, password },
       });
 
-      await sendEmail(email, password); 
+      // try {
+      //   await sendEmail(email, password);
+      // } catch (emailError) {
+      //   console.error("Erro ao enviar e-mail:", emailError);
+      // }
+      console.log(email, password)
 
       return reply.status(201).send(user);
     } catch (error) {
@@ -85,6 +75,9 @@ export default async function adminRoutes(fastify: FastifyInstance) {
 
   fastify.put("/users/:id", async (request, reply) => {
     const { id } = request.params as { id: string };
+    const userId = parseInt(id, 10);
+    if (isNaN(userId)) return reply.status(400).send({ message: "ID inválido" });
+
     const { fullName, password, geres, admin, email } = request.body as {
       fullName?: string;
       password?: string;
@@ -95,15 +88,10 @@ export default async function adminRoutes(fastify: FastifyInstance) {
 
     try {
       const user = await prisma.user.update({
-        where: { id: Number(id) },
-        data: {
-          fullName,
-          password,
-          geres,
-          admin,
-          email,
-        },
+        where: { id: userId },
+        data: { fullName, password, geres, admin, email },
       });
+
       return reply.send(user);
     } catch (error) {
       console.error("Erro ao atualizar usuário:", error);
@@ -112,14 +100,17 @@ export default async function adminRoutes(fastify: FastifyInstance) {
   });
 
   fastify.put("/removeUsers/:id", async (request, reply) => {
-    const { id } = request.params as { id: number };
+    const { id } = request.params as { id: string };
+    const userId = parseInt(id, 10);
+    if (isNaN(userId)) return reply.status(400).send({ message: "ID inválido" });
 
     try {
       await prisma.user.update({
-        where: { id },
+        where: { id: userId },
         data: { active: false },
       });
-      return reply.status(204).send(); 
+
+      return reply.status(204).send();
     } catch (error) {
       console.error("Erro ao deletar usuário:", error);
       return reply.status(500).send({ message: "Erro ao deletar usuário" });
@@ -134,8 +125,12 @@ export default async function adminRoutes(fastify: FastifyInstance) {
           form: true,
         },
       });
-      console.log(logs);
 
+      if (logs.some(log => !log.user || !log.form)) {
+        throw new Error("Dados inconsistentes: usuário ou formulário não encontrado.");
+      }
+
+      console.log(logs);
       return reply.send(logs);
     } catch (error) {
       console.error("Erro ao buscar logs:", error);
