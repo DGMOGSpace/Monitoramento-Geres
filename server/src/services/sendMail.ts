@@ -8,14 +8,13 @@ async function sendEmail(email: string, password: string): Promise<void> {
   const user = await prisma.user.findUnique({
     where: { email },
   });
-
   const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 587,
     secure: false,
     auth: {
-      user: process.env["EMAIL_USER"],
-      pass: process.env["EMAIL_PASS"],
+      user: "silvaugusto222@gmail.com",
+      pass: "cyri ayau hcro cszn "
     },
   });
 
