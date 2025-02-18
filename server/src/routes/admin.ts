@@ -44,12 +44,11 @@ export default async function adminRoutes(fastify: FastifyInstance) {
         data: { fullName, geres: geresInt, admin, email, cargo, setor, password },
       });
 
-      // try {
-      //   await sendEmail(email, password);
-      // } catch (emailError) {
-      //   console.error("Erro ao enviar e-mail:", emailError);
-      // }
-      console.log(email, password)
+      try {
+        await sendEmail(email, password);
+     } catch (emailError) {
+        console.error("Erro ao enviar e-mail:", emailError);
+      }
 
       return reply.status(201).send(user);
     } catch (error) {
