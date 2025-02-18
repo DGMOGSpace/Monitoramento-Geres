@@ -4,7 +4,7 @@ import { defineConfig } from "vite"
 
 export default defineConfig({
   plugins: [react()],
-  base: "/monitoramento-geres/",
+  base: "/apps/monitoramento-geres/",
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),

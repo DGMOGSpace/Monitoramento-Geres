@@ -28,7 +28,11 @@ const AuthForm = ({
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    await signIn(email, password.trim());
+    try {
+      await signIn(email, password.trim());
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
