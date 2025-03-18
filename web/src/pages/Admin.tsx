@@ -75,7 +75,7 @@ export function Admin() {
           {renderTabButton(ActiveTab.Logs, "Logs de Envio")}
         </nav>
         <div className="mt-auto">
-          <Button
+        {/*  <Button
             className="w-full mb-2 bg-green-600 text-white hover:bg-green-700"
             onClick={handleDownload}
           >
@@ -86,12 +86,12 @@ export function Admin() {
             className="w-full mb-2 bg-yellow-600 text-white hover:bg-yellow-700"
           >
             Atualizar Página
-          </Button>
+          </Button> */ }
           <Button
             onClick={handleLogout}
             className="w-full bg-red-600 text-white hover:bg-red-700"
           >
-            Logout
+            Sair
           </Button>
         </div>
       </aside>

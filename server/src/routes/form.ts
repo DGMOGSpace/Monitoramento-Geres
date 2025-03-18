@@ -56,9 +56,7 @@ export function convertFormLabel(
 }
 export default async function formRoutes(fastify: FastifyInstance) {
   fastify.post("/addData", async (request, reply) => {
-    // 5. Validação de tipos com Zod
     const validationResult = createDataFormSchema.safeParse(request.body);
-    console.log(validationResult.data?.values)
     if (!validationResult.success) {
       return reply.status(400).send({
         message: "Dados inválidos",
@@ -68,7 +66,6 @@ export default async function formRoutes(fastify: FastifyInstance) {
 
     const { startDate, endDate, userId, values } = validationResult.data;
 
-    // 6. Validação adicional de datas
     if (new Date(startDate) >= new Date(endDate)) {
       return reply.status(400).send({
         message: "Data final deve ser posterior à data inicial"
@@ -76,17 +73,14 @@ export default async function formRoutes(fastify: FastifyInstance) {
     }
 
     try {
-      // 7. Usar transação do Prisma
       return await prisma.$transaction(async (tx) => {
         const dataFormValues: Record<string, number | null> = {};
 
-        // 8. Processamento seguro dos valores
         const parseValue = (valor: string | number): number | null => {
           const num = Number(valor);
           return Number.isFinite(num) ? num : null;
         };
 
-        // 9. Validação de indicadores
         for (const item of values) {
           const convertedIndicator = convertFormLabel(item.indicador, indicatorsMap);
           if (!convertedIndicator) {
@@ -95,7 +89,6 @@ export default async function formRoutes(fastify: FastifyInstance) {
           dataFormValues[convertedIndicator] = parseValue(item.valor);
         }
 
-        // 10. Atualização/Inserção com verificação completa
         const existingDataForm = await tx.dataForm.findFirst({
           where: {
             idUser: userId,

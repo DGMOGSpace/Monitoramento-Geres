@@ -15,7 +15,6 @@ export default async function authRoutes(fastify: FastifyInstance) {
       const user = await prisma.user.findUnique({
         where: { email },
       });
-      console.log(user?.password, currentPassword)
       if (user?.password === currentPassword) {
         await prisma.user.update({
           where: { email },

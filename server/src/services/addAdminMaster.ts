@@ -11,7 +11,6 @@ export async function createAdminUser() {
     });
 
     if (existingUser) {
-      console.log("User already exists:", existingUser);
       return;
     }
 
