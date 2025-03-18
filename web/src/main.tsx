@@ -10,7 +10,7 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-    <Router basename="/apps/monitoramento-geres/">
+    <Router basename="/monitoramento-geres/">
       <AuthProvider>
         <App />
       </AuthProvider>

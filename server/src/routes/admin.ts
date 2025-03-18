@@ -119,17 +119,17 @@ export default async function adminRoutes(fastify: FastifyInstance) {
   fastify.get("/logs", async (request, reply) => {
     try {
       const logs = await prisma.log.findMany({
+        where: {
+          user: {
+            NOT: {}, 
+          },
+        },
         include: {
           user: true,
           form: true,
         },
       });
 
-      if (logs.some(log => !log.user || !log.form)) {
-        throw new Error("Dados inconsistentes: usuário ou formulário não encontrado.");
-      }
-
-      console.log(logs);
       return reply.send(logs);
     } catch (error) {
       console.error("Erro ao buscar logs:", error);
@@ -236,6 +236,8 @@ export default async function adminRoutes(fastify: FastifyInstance) {
           form: true,
         },
       });
+
+      
 
       const workbook = new ExcelJS.Workbook();
       const worksheet = workbook.addWorksheet("Logs");

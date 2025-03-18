@@ -29,7 +29,7 @@ export default function Home() {
       className="h-full w-full flex flex-col bg-cover bg-center"
       style={{ backgroundImage: "url('bg_blue_home.png')" }}
     >
-      <div className="flex flex-col bg-gradient-to-r from-white py-52">
+      <div className="flex h-full flex-col bg-gradient-to-r from-white py-72">
         <div className="grid md:grid-cols-2 gap-6 flex-grow mb-32">
           <div className="flex justify-center flex-col items-start md:ml-14">
             <img
@@ -47,21 +47,7 @@ export default function Home() {
             <AuthForm setLoading={setLoading} />
           </div>
         </div>
-        <div className="flex flex-col items-center mt-12">
-          <h1 className="text-3xl font-semibold text-blue-400 bg-gray-50 px-5 py-1 rounded-lg mb-4">
-            Apresentação
-          </h1>
-          <div className="w-full md:w-3/4 lg:w-1/2 rounded-lg shadow-lg overflow-hidden">
-            <iframe
-              className="w-full h-64 md:h-80 rounded-lg"
-              src="https://www.youtube.com/embed/SEU_VIDEO_ID"
-              title="Apresentação do Sistema"
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            ></iframe>
-          </div>
-        </div>
+  
       </div>
       <Footer />
     </div>

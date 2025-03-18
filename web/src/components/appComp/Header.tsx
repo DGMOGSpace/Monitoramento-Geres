@@ -35,7 +35,6 @@ const Header: React.FC = () => {
         currentPassword,
         newPassword,
       });
-      console.log(response);
 
       setSuccessMessage("Senha atualizada com sucesso!");
       setErrorMessage("");

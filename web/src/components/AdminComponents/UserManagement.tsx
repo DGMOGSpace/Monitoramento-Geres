@@ -32,7 +32,8 @@ import {
   PaginationPrevious,
   PaginationNext,
 } from "@/components/ui/pagination";
-import { Toggle } from "@/components/ui/toggle";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 
 interface UserData {
   id: number;
@@ -41,6 +42,7 @@ interface UserData {
   geres: number;
   setor: string;
   active: boolean;
+  admin: boolean; // Adicionado para exibir se o usuário é administrador
 }
 
 const USERS_PER_PAGE = 5;
@@ -109,6 +111,14 @@ export function UserManagement() {
     }
   };
 
+  const handleSwitchActive = async (user: UserData) => {
+    const updatedUser = { ...user, active: !user.active };
+    await api.put(`/users/${user.id}`, updatedUser);
+    setUserData((prevData) =>
+      prevData.map((u) => (u.id === user.id ? updatedUser : u))
+    );
+  };
+
   return (
     <>
       <Card className="shadow-md rounded-lg p-4 mb-6 h-full grid grid-rows-[1fr_6fr]">
@@ -130,7 +140,6 @@ export function UserManagement() {
               onChange={(e) => setSearchEmail(e.target.value)}
               className="mr-2"
             />
-            <Toggle>Ativos</Toggle>
           </div>
           <Table>
             <TableHeader>
@@ -138,6 +147,8 @@ export function UserManagement() {
                 <TableHead>Geres</TableHead>
                 <TableHead>Nome</TableHead>
                 <TableHead>Email</TableHead>
+                <TableHead>Administrador</TableHead>
+                <TableHead>Ativo</TableHead>
                 <TableHead>Ações</TableHead>
               </TableRow>
             </TableHeader>
@@ -150,21 +161,25 @@ export function UserManagement() {
                   <TableCell>{user.geres}</TableCell>
                   <TableCell>{user.fullName}</TableCell>
                   <TableCell>{user.email}</TableCell>
+                  <TableCell>{user.admin ? "Sim" : "Não"}</TableCell>
+                  <TableCell>
+                    <div className="flex items-center space-x-2">
+                      <Switch
+                        id={`user-active-${user.id}`}
+                        checked={user.active}
+                        onCheckedChange={() => handleSwitchActive(user)}
+                      />
+                      <Label htmlFor={`user-active-${user.id}`}>
+                        {user.active ? "Ativo" : "Inativo"}
+                      </Label>
+                    </div>
+                  </TableCell>
                   <TableCell>
                     <Button
                       className="bg-blue-500 hover:bg-blue-700"
                       onClick={() => handleEditUser(user)}
                     >
                       Editar
-                    </Button>
-                    <Button
-                      onClick={() => {
-                        setUserToDelete(user);
-                        setIsDeleteDialogOpen(true);
-                      }}
-                      className="ml-2 bg-red-600 text-white hover:bg-red-500"
-                    >
-                      Deletar
                     </Button>
                   </TableCell>
                 </TableRow>

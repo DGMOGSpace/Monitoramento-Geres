@@ -30,7 +30,7 @@ import {
 } from "@/components/ui/pagination";
 import { useState, useEffect } from "react";
 import { Input } from "../ui/input";
-
+import { Switch } from "../ui/switch";
 interface logsData {
   idUser: string;
   idForm: number;

@@ -1,8 +1,9 @@
 import { createContext, useState, ReactNode, useEffect } from "react";
 import { api } from "@/api/api";
 import { saveAuthData, clearAuthData, getAuthData } from "./AuthHelpers";
-import UserInterface from "@/interfaces/User";
+import UserInterface from "@/interfaces/UserInterface";
 import { useToast } from "../use-toast";
+
 interface AuthContextType {
   user: UserInterface | null;
   signed: boolean;
@@ -31,8 +32,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const signIn = async (email: string, password: string) => {
     try {
-   
-
       const response = await api.post("/login", { email, password });
       if (response.data.error) {
         toast({

@@ -1,4 +1,4 @@
-import UserInterface from "../../interfaces/User";
+import UserInterface from "@/interfaces/UserInterface";
 
 export const saveAuthData = (user: UserInterface, token: string) => {
   localStorage.setItem("@Auth:token", token);
@@ -13,7 +13,6 @@ export const clearAuthData = () => {
 export const getAuthData = () => {
   const user = localStorage.getItem("@Auth:user");
   const token = localStorage.getItem("@Auth:token");
-  console.log(user, token)
   return {
     user: user ? JSON.parse(user) : (null as UserInterface | null),
     token,
