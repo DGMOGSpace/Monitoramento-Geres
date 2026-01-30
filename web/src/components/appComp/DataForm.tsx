@@ -49,6 +49,21 @@ const DataForm = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [groupingEnabled, setGroupingEnabled] = useState(true);
+  const [unitData, setUnitData] = useState<{ unidade: string; leitos: string }[]>([]);
+
+  const handleAddUnit = () => {
+    setUnitData((prev) => [...prev, { unidade: "", leitos: "" }]);
+  };
+
+  const handleUnitChange = (index: number, field: "unidade" | "leitos", value: string) => {
+    setUnitData((prev) =>
+      prev.map((item, i) => (i === index ? { ...item, [field]: value } : item))
+    );
+  };
+
+  const handleRemoveUnit = (index: number) => {
+    setUnitData((prev) => prev.filter((_, i) => i !== index));
+  };
 
   const [valuesList, setValuesList] = useState<IndicatorValue[]>(() => {
     const initialValues: IndicatorValue[] = [];
@@ -60,8 +75,6 @@ const DataForm = () => {
     return initialValues;
   });
 
-  console.log(valuesList)
-
   const form = useForm({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -70,7 +83,6 @@ const DataForm = () => {
     },
   });
 
-  // Função para manipular a mudança de valor dos indicadores
     const handleValueChange = (indicador: string, value: string) => {
       setValuesList(prev => 
         prev.map(item => 
@@ -79,7 +91,6 @@ const DataForm = () => {
       );
     };
     
-  // Verificar se todos os campos (datas e indicadores) estão preenchidos
   const allFieldsFilled =
   form.getValues().startDate &&
   form.getValues().endDate &&
@@ -91,10 +102,12 @@ const DataForm = () => {
       ...data,
       userId: user?.id,
       values: valuesList,
+      unidadesEQuantitativos: unitData,
     };
 
     await api.post("/addData", payload);
-    valuesList.forEach((val) => (val.valor = ''));
+    valuesList.forEach((val) => (val.valor = ""));
+    setUnitData([]);
     form.reset();
     setIsModalOpen(false);
     setIsSuccessModalOpen(true);
@@ -156,7 +169,63 @@ const DataForm = () => {
                     <AccordionContent className="p-4">
                       {indicadores.map((indicador) => {
                         const index = valuesList.findIndex(item => item.indicador === indicador);
-                        return (
+                        return indicador === "UNIDADES E QUANTITATIVOS DOS LEITOS ABERTOS" ? (
+                          <div className="mb-4">
+                            
+                            <div className="border border-gray-300 rounded-md p-4">
+                              <table className="w-full text-left border-collapse">
+                                <thead>
+                                  <tr>
+                                    <th className="border-b p-2">Unidade</th>
+                                    <th className="border-b p-2">Leitos Abertos</th>
+                                    <th className="border-b p-2">Ações</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {unitData.map((item, index) => (
+                                    <tr key={index}>
+                                      <td className="p-2">
+                                        <Input
+                                          type="text"
+                                          placeholder="Unidade"
+                                          value={item.unidade}
+                                          onChange={(e) => handleUnitChange(index, "unidade", e.target.value)}
+                                          className="border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-300 focus:outline-none w-full"
+                                        />
+                                      </td>
+                                      <td className="p-2">
+                                        <Input
+                                          type="number"
+                                          min={0}
+                                          placeholder="Leitos Abertos"
+                                          value={item.leitos}
+                                          onChange={(e) => handleUnitChange(index, "leitos", e.target.value)}
+                                          className="border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-300 focus:outline-none w-full"
+                                        />
+                                      </td>
+                                      <td className="p-2">
+                                        <Button
+                                          type="button"
+                                          onClick={() => handleRemoveUnit(index)}
+                                          className="bg-red-500 text-white hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-300 rounded-md shadow-md"
+                                        >
+                                          Remover
+                                        </Button>
+                                      </td>
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
+                              <Button
+                                type="button"
+                                onClick={handleAddUnit}
+                                className="mt-4 bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300 rounded-md shadow-md"
+                              >
+                                Adicionar Unidade
+                              </Button>
+                            </div>
+                          </div>
+                        ) : (
                           <div key={indicador} className="mb-4">
                             <FormLabel className="text-gray-700 font-medium">
                               {indicador}
@@ -182,7 +251,65 @@ const DataForm = () => {
           ) : (
             Object.values(dados.temasIndicadores).flat().map((indicador) => {
               const index = valuesList.findIndex(item => item.indicador === indicador);
-              return (
+              return indicador === "UNIDADES E QUANTITATIVOS DOS LEITOS ABERTOS" ? (
+                <div className="mb-4">
+                  <FormLabel className="text-gray-700 font-medium">
+                    UNIDADES E QUANTITATIVOS DOS LEITOS ABERTOS
+                  </FormLabel>
+                  <div className="border border-gray-300 rounded-md p-4">
+                    <table className="w-full text-left border-collapse">
+                      <thead>
+                        <tr>
+                          <th className="border-b p-2">Unidade</th>
+                          <th className="border-b p-2">Leitos Abertos</th>
+                          <th className="border-b p-2">Ações</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {unitData.map((item, index) => (
+                          <tr key={index}>
+                            <td className="p-2">
+                              <Input
+                                type="text"
+                                placeholder="Unidade"
+                                value={item.unidade}
+                                onChange={(e) => handleUnitChange(index, "unidade", e.target.value)}
+                                className="border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-300 focus:outline-none w-full"
+                              />
+                            </td>
+                            <td className="p-2">
+                              <Input
+                                type="number"
+                                min={0}
+                                placeholder="Leitos Abertos"
+                                value={item.leitos}
+                                onChange={(e) => handleUnitChange(index, "leitos", e.target.value)}
+                                className="border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-300 focus:outline-none w-full"
+                              />
+                            </td>
+                            <td className="p-2">
+                              <Button
+                                type="button"
+                                onClick={() => handleRemoveUnit(index)}
+                                className="bg-red-500 text-white hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-300 rounded-md shadow-md"
+                              >
+                                Remover
+                              </Button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                    <Button
+                      type="button"
+                      onClick={handleAddUnit}
+                      className="mt-4 bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300 rounded-md shadow-md"
+                    >
+                      Adicionar Unidade
+                    </Button>
+                  </div>
+                </div>
+              ) : (
                 <div key={indicador} className="mb-4">
                   <FormLabel className="text-gray-700 font-medium">
                     {indicador}
